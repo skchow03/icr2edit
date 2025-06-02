@@ -7,10 +7,9 @@ A command-line tool for viewing and editing engine and chassis parameters in Ind
 ## Features
 
 - View engine and chassis parameter tables in a tabular format
+- Add or remove editable parameters using parameters.csv
 - Edit any individual parameter by engine/chassis and index
-- Reset all values to original stock defaults (hardcoded)
 - Save changes directly to the EXE
-- Automatically creates a .bak backup of the EXE upon load
 - No GUI required — runs entirely in the terminal
 
 ---
@@ -29,15 +28,6 @@ Download the precompiled .exe from Releases or run from source:
 Or:
 
     icr2_physedit.exe path/to/INDYCAR.EXE
-
-Upon launch, you’ll see a table display and a menu like:
-
-    --- MENU ---
-    [1] Edit engine value
-    [2] Edit chassis value
-    [3] Reset to default
-    [4] Save changes
-    [5] Quit
 
 ---
 
