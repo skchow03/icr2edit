@@ -6,45 +6,87 @@ F9CE4,DD32C,115414,4,UInt32,1290,Engine parameters Ford,Torque RPM scale
 F9CE8,DD330,115418,4,UInt32,8675,Engine parameters Ford,Torque drop-off rate
 F9CEC,DD334,11541C,4,UInt32,0,Engine parameters Ford,Torque adjustment
 F9CF0,DD338,115420,4,UInt32,6500,Engine parameters Ford,RPM limit
-F9CF8,,,4,UInt32,6282,Engine parameters Mercedes,Fuel consumption rate
-F9CFC,,,4,UInt32,6500,Engine parameters Mercedes,RPM upshift point
-F9D00,,,4,UInt32,3900,Engine parameters Mercedes,RPM downshift point
-F9D04,,,4,UInt32,1236,Engine parameters Mercedes,Torque RPM scale
-F9D08,,,4,UInt32,8308,Engine parameters Mercedes,Torque drop-off rate
-F9D0C,,,4,UInt32,2000000,Engine parameters Mercedes,Torque adjustment
-F9D10,,,4,UInt32,6500,Engine parameters Mercedes,RPM limit
-F9D18,,,4,UInt32,6282,Engine parameters Honda,Fuel consumption rate
-F9D1C,,,4,UInt32,6750,Engine parameters Honda,RPM upshift point
-F9D20,,,4,UInt32,4100,Engine parameters Honda,RPM downshift point
-F9D24,,,4,UInt32,1180,Engine parameters Honda,Torque RPM scale
-F9D28,,,4,UInt32,7637,Engine parameters Honda,Torque drop-off rate
-F9D2C,,,4,UInt32,1000000,Engine parameters Honda,Torque adjustment
-F9D30,,,4,UInt32,6750,Engine parameters Honda,RPM limit
-F9D44,,,4,UInt32,7500,Chassis parameters Lola,Engine placement
-F9D48,,,4,UInt32,33000,Chassis parameters Lola,Road course downforce
-F9D4C,,,4,UInt32,28000,Chassis parameters Lola,Speedway downforce
-F9D50,,,4,UInt32,255,Chassis parameters Lola,Road course weight
-F9D54,,,4,UInt32,260,Chassis parameters Lola,Speedway weight
-F9D58,,,4,UInt32,43691,Chassis parameters Lola,Chassis weight
-F9D5C,,,4,UInt32,7550,Chassis parameters Penske,Engine placement
-F9D60,,,4,UInt32,33000,Chassis parameters Penske,Road course downforce
-F9D64,,,4,UInt32,28000,Chassis parameters Penske,Speedway downforce
-F9D68,,,4,UInt32,255,Chassis parameters Penske,Road course weight
-F9D6C,,,4,UInt32,260,Chassis parameters Penske,Speedway weight
-F9D70,,,4,UInt32,43691,Chassis parameters Penske,Chassis weight
-F9D74,,,4,UInt32,7550,Chassis parameters Reynard,Engine placement
-F9D78,,,4,UInt32,33000,Chassis parameters Reynard,Road course downforce
-F9D7C,,,4,UInt32,28000,Chassis parameters Reynard,Speedway downforce
-F9D80,,,4,UInt32,255,Chassis parameters Reynard,Road course weight
-F9D84,,,4,UInt32,260,Chassis parameters Reynard,Speedway weight
-F9D88,,,4,UInt32,43691,Chassis parameters Reynard,Chassis weight
-,71CF5,,2,UInt16,5000,Dashboard,Frozen lap time display
+F9CF8,DD340,115428,4,UInt32,6282,Engine parameters Mercedes,Fuel consumption rate
+F9CFC,DD344,11542C,4,UInt32,6500,Engine parameters Mercedes,RPM upshift point
+F9D00,DD348,115430,4,UInt32,3900,Engine parameters Mercedes,RPM downshift point
+F9D04,DD34C,115434,4,UInt32,1236,Engine parameters Mercedes,Torque RPM scale
+F9D08,DD350,115438,4,UInt32,8308,Engine parameters Mercedes,Torque drop-off rate
+F9D0C,DD354,11543C,4,UInt32,2000000,Engine parameters Mercedes,Torque adjustment
+F9D10,DD358,115440,4,UInt32,6500,Engine parameters Mercedes,RPM limit
+F9D18,DD360,115448,4,UInt32,6282,Engine parameters Honda,Fuel consumption rate
+F9D1C,DD364,11544C,4,UInt32,6750,Engine parameters Honda,RPM upshift point
+F9D20,DD368,115450,4,UInt32,4100,Engine parameters Honda,RPM downshift point
+F9D24,DD36C,115454,4,UInt32,1180,Engine parameters Honda,Torque RPM scale
+F9D28,DD370,115458,4,UInt32,7637,Engine parameters Honda,Torque drop-off rate
+F9D2C,DD374,11545C,4,UInt32,1000000,Engine parameters Honda,Torque adjustment
+F9D30,DD378,115460,4,UInt32,6750,Engine parameters Honda,RPM limit
+F9D44,DD38C,115474,4,UInt32,7500,Chassis parameters Lola,Engine placement
+F9D48,DD390,115478,4,UInt32,33000,Chassis parameters Lola,Road course downforce
+F9D4C,DD394,11547C,4,UInt32,28000,Chassis parameters Lola,Speedway downforce
+F9D50,DD398,115480,4,UInt32,255,Chassis parameters Lola,Road course weight balance
+F9D54,DD39C,115484,4,UInt32,260,Chassis parameters Lola,Speedway weight balance
+F9D58,DD3A0,115488,4,UInt32,43691,Chassis parameters Lola,Chassis weight
+F9D5C,DD3A4,11548C,4,UInt32,7550,Chassis parameters Penske,Engine placement
+F9D60,DD3A8,115490,4,UInt32,33000,Chassis parameters Penske,Road course downforce
+F9D64,DD3AC,115494,4,UInt32,28000,Chassis parameters Penske,Speedway downforce
+F9D68,DD3B0,115498,4,UInt32,255,Chassis parameters Penske,Road course weight balance
+F9D6C,DD3B4,11549C,4,UInt32,260,Chassis parameters Penske,Speedway weight balance
+F9D70,DD3B8,1154A0,4,UInt32,43691,Chassis parameters Penske,Chassis weight
+F9D74,DD3BC,1154A4,4,UInt32,7550,Chassis parameters Reynard,Engine placement
+F9D78,DD3C0,1154A8,4,UInt32,33000,Chassis parameters Reynard,Road course downforce
+F9D7C,DD3C4,1154AC,4,UInt32,28000,Chassis parameters Reynard,Speedway downforce
+F9D80,DD3C8,1154B0,4,UInt32,255,Chassis parameters Reynard,Road course weight balance
+F9D84,DD3CC,1154B4,4,UInt32,260,Chassis parameters Reynard,Speedway weight balance
+F9D88,DD3D0,1154B8,4,UInt32,43691,Chassis parameters Reynard,Chassis weight
+,71CF5,,2,UInt16,5000,Other,Frozen lap time display
+,2C4A7,,4,UInt32,1800000,Other,Failure rate
 6DEF2,6D7BC,,2,UInt16,1000,Engine physics,Engine idle RPM
 6DF0A,6D7CB,,2,UInt16,1000,Engine physics,Engine idle RPM
 6DF30,6D7EA,,2,UInt16,250,Engine physics,RPM change rate
 6DF37,6D7F0,,2,UInt16,250,Engine physics,RPM change rate
+6DFB9,,,2,UInt16,17184,Engine physics,Torque multiplier
 6E002,6D8AF,,2,UInt16,6000,Engine physics,Boost related
 6E009,6D8C5,,2,UInt16,6000,Engine physics,Boost related
-None,6D8CB,,2,UInt16,6000,Engine physics,Boost related
+,6D8CB,,2,UInt16,6000,Engine physics,Boost related
 6E00E,6D8CF,,2,UInt16,17929,Engine physics,Boost related
 ,6DE61,,2,UInt16,750,Engine physics,RPM limit adjustment
+FEFD4,DBE68,,1,UInt8,20,Points 1-12,Pos 1
+FEFD5,DBE69,,1,UInt8,16,Points 1-12,Pos 2
+FEFD6,DBE6A,,1,UInt8,14,Points 1-12,Pos 3
+FEFD7,DBE6B,,1,UInt8,12,Points 1-12,Pos 4
+FEFD8,DBE6C,,1,UInt8,10,Points 1-12,Pos 5
+FEFD9,DBE6D,,1,UInt8,8,Points 1-12,Pos 6
+FEFDA,DBE6E,,1,UInt8,6,Points 1-12,Pos 7
+FEFDB,DBE6F,,1,UInt8,5,Points 1-12,Pos 8
+FEFDC,DBE70,,1,UInt8,4,Points 1-12,Pos 9
+FEFDD,DBE71,,1,UInt8,3,Points 1-12,Pos 10
+FEFDE,DBE72,,1,UInt8,2,Points 1-12,Pos 11
+FEFDF,DBE73,,1,UInt8,1,Points 1-12,Pos 12
+FEFE0,DBE74,,1,UInt8,0,Points 13-33,Pos 13
+FEFE1,DBE75,,1,UInt8,0,Points 13-33,Pos 14
+FEFE2,DBE76,,1,UInt8,0,Points 13-33,Pos 15
+FEFE3,DBE77,,1,UInt8,0,Points 13-33,Pos 16
+FEFE4,DBE78,,1,UInt8,0,Points 13-33,Pos 17
+FEFE5,DBE79,,1,UInt8,0,Points 13-33,Pos 18
+FEFE6,DBE7A,,1,UInt8,0,Points 13-33,Pos 19
+FEFE7,DBE7B,,1,UInt8,0,Points 13-33,Pos 20
+FEFE8,DBE7C,,1,UInt8,0,Points 13-33,Pos 21
+FEFE9,DBE7D,,1,UInt8,0,Points 13-33,Pos 22
+FEFEA,DBE7E,,1,UInt8,0,Points 13-33,Pos 23
+FEFEB,DBE7F,,1,UInt8,0,Points 13-33,Pos 24
+FEFEC,DBE80,,1,UInt8,0,Points 13-33,Pos 25
+FEFED,DBE81,,1,UInt8,0,Points 13-33,Pos 26
+FEFEE,DBE82,,1,UInt8,0,Points 13-33,Pos 27
+FEFEF,DBE83,,1,UInt8,0,Points 13-33,Pos 28
+FEFF0,DBE84,,1,UInt8,0,Points 13-33,Pos 29
+FEFF1,DBE85,,1,UInt8,0,Points 13-33,Pos 30
+FEFF2,DBE86,,1,UInt8,0,Points 13-33,Pos 31
+FEFF3,DBE87,,1,UInt8,0,Points 13-33,Pos 32
+FEFF4,DBE88,,1,UInt8,0,Points 13-33,Pos 33
+FEFF5,DBE89,,1,UInt8,0,Points 34-40,Pos 34
+FEFF6,DBE8A,,1,UInt8,0,Points 34-40,Pos 35
+FEFF7,DBE8B,,1,UInt8,0,Points 34-40,Pos 36
+FEFF8,DBE8C,,1,UInt8,0,Points 34-40,Pos 37
+FEFF9,DBE8D,,1,UInt8,0,Points 34-40,Pos 38
+FEFFA,DBE8E,,1,UInt8,0,Points 34-40,Pos 39
+FEFFB,DBE8F,,1,UInt8,0,Points 34-40,Pos 40
