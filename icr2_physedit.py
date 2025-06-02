@@ -1,256 +1,215 @@
+import csv
 import os
 import struct
-from copy import deepcopy
 import sys
-import shutil
 
+EXE_VERSIONS = {
+    1142371: "dos100",
+    1142387: "dos102",
+    1247899: "rend102",
+    1916928: "windy101"
+}
 
-class ChassisParam:
-    def __init__(self, values):
-        if len(values) != 6:
-            raise ValueError("Each chassis must have exactly 6 parameters.")
-        self.params = values
-
-    def __getitem__(self, index):
-        return self.params[index]
-
-    def __setitem__(self, index, value):
-        self.params[index] = value
-
-    def __repr__(self):
-        return f"ChassisParam({self.params})"
-
-
-class EngineParam:
-    def __init__(self, values):
-        if len(values) != 8:
-            raise ValueError("Each engine must have exactly 8 parameters.")
-        self.params = values
-
-    def __getitem__(self, index):
-        return self.params[index]
-
-    def __setitem__(self, index, value):
-        self.params[index] = value
-
-    def __repr__(self):
-        return f"EngineParam({self.params})"
-
-def parse_hex_pattern_to_int_list(hex_string):
-    """Convert hex pattern string to list of 4-byte unsigned ints (little endian)"""
-    raw = bytes.fromhex(hex_string)
-    if len(raw) % 4 != 0:
-        raise ValueError("Hex pattern length is not a multiple of 4.")
-    return [struct.unpack('<I', raw[i:i+4])[0] for i in range(0, len(raw), 4)]
-
-
-def save_table_to_file(file_path, offset, table):
-    with open(file_path, 'rb+') as f:
-        f.seek(offset)
-        for entry in table:
-            for val in entry.params:
-                f.write(struct.pack('<I', val))
-
-def edit_value(table, label):
-    try:
-        entity = int(input(f"Select {label} index (0–2): "))
-        param = int(input(f"Select parameter index: "))
-        value = int(input("Enter new value: "))
-        table[entity][param] = value
-        print(f"{label} {entity} param {param} updated to {value}.")
-    except (ValueError, IndexError):
-        print("Invalid input.")
-
-
-def load_chassis_table(file_path, offset):
-    count = 3 * 6  # 3 chassis * 6 params each
-    flat_values = read_4byte_ints(file_path, offset, count, signed=False)
-    return [ChassisParam(flat_values[i*6:(i+1)*6]) for i in range(3)]
-
-
-def load_engine_table(file_path, offset):
-    count = 3 * 8  # 3 engines * 8 params each
-    flat_values = read_4byte_ints(file_path, offset, count, signed=False)
-    return [EngineParam(flat_values[i*8:(i+1)*8]) for i in range(3)]
+ADDRESS_KEYS = {
+    "dos100": "DOS address",
+    "dos102": "DOS address",
+    "windy101": "Windy address",
+    "rend102": "Rendition address"
+}
 
 def identify_icr2_version(file_path):
     size = os.path.getsize(file_path)
     print(f"File: {file_path} ({size} bytes)")
-    if size == 1142371:
-        print ('DOS version 1.0.0')
-        return "dos100"
-    elif size == 1142387:
-        print ('DOS version 1.0.2')
-        return "dos102"
-    elif size == 1247899:
-        print ('Rendition version 1.0.2-RN1 Build #61')
-        return "rend102"
-    elif size == 1916928:
-        print ('Windows version 1.0.1')
-        return "windy101"
+    version = EXE_VERSIONS.get(size)
+    if version:
+        print(f"Detected version: {version}")
     else:
-        print ('Unknown version (unrecognized file size)')
-        return False # Unknown version (unrecognized file size)
+        print("Unknown version (unrecognized file size).")
+    return version
 
-def hex_string_to_bytes(hex_string):
-    """Convert a hex string like '92 18 00 00' into bytes"""
-    return bytes.fromhex(hex_string)
+def load_parameters_by_category(file_path):
+    parameters_by_category = {}
+    with open(file_path, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            category = row['Category'].strip()
+            if not category:
+                continue
+            if category not in parameters_by_category:
+                parameters_by_category[category] = []
+            parameters_by_category[category].append(row)
+    return parameters_by_category
 
-def find_pattern_in_file(file_path, hex_string, pattern_name):
-    """Search for the given hex string in the binary file"""
-    pattern = hex_string_to_bytes(hex_string)
-    with open(file_path, 'rb') as f:
-        data = f.read()
-    index = data.find(pattern)
-    if index != -1:
-        print(f"{pattern_name} found at file offset: 0x{index:X}")
-    else:
-        print("Pattern not found.")
-
-def read_4byte_ints(file_path, offset, count, signed=False):
-    """Reads 'count' 4-byte integers from 'file_path' starting at 'offset'."""
-    int_format = '<i' if signed else '<I'  # little-endian
-    results = []
-
-    with open(file_path, 'rb') as f:
+def read_value_from_exe(exe_path, address_hex, length):
+    try:
+        offset = int(address_hex, 16)
+    except (ValueError, TypeError):
+        return None
+    with open(exe_path, 'rb') as f:
         f.seek(offset)
-        for _ in range(count):
-            bytes_read = f.read(4)
-            if len(bytes_read) < 4:
-                raise ValueError("Unexpected end of file")
-            value = struct.unpack(int_format, bytes_read)[0]
-            results.append(value)
+        data = f.read(length)
+        if len(data) != length:
+            return None
+        if length == 2:
+            return struct.unpack('<H', data)[0]
+        elif length == 4:
+            return struct.unpack('<I', data)[0]
+        else:
+            return int.from_bytes(data, 'little')
+    return None
 
-    return results
+def write_value_to_exe(exe_path, address_hex, length, value):
+    try:
+        offset = int(address_hex, 16)
+    except (ValueError, TypeError):
+        print("Invalid address.")
+        return
+    with open(exe_path, 'rb+') as f:
+        f.seek(offset)
+        if length == 2:
+            f.write(struct.pack('<H', value))
+        elif length == 4:
+            f.write(struct.pack('<I', value))
+        else:
+            f.write(value.to_bytes(length, 'little'))
 
-def print_table(label, table, param_count, entity_label="Engine"):
-    print(f"\n{label}:")
-    
-    # Header
-    col_width = 12
-    header = f"{'Param':<6}" + "".join([f"{f'{entity_label} {i}':>{col_width}}" for i in range(len(table))])
-    print(header)
-    print("-" * len(header))
-    
-    # Rows
-    for param_index in range(param_count):
-        row = f"[{param_index}]".ljust(6)
-        for entity in table:
-            row += f"{entity[param_index]:>{col_width}}"
-        print(row)
+def list_categories(parameters_by_category):
+    print("\nAvailable Categories:")
+    for i, category in enumerate(parameters_by_category.keys()):
+        print(f"[{i}] {category}")
+    print("[s] Save all changes")
+    print("[q] Quit")
+    return list(parameters_by_category.keys())
 
+def filter_parameters(parameters, version):
+    address_key = ADDRESS_KEYS.get(version, "Windy address")
+    valid_params = []
+    for param in parameters:
+        address = param.get(address_key, "").strip()
+        try:
+            int(address, 16)
+            valid_params.append(param)
+        except ValueError:
+            continue
+    return valid_params
 
+def list_parameters_with_values(parameters, current_values):
+    print("\nParameters in this category:")
+    print(f"{'Idx':<4} {'Description':<40} {'Current':>10} {'Default':>10}")
+    print("-" * 70)
+    for i, param in enumerate(parameters):
+        desc = param['Description']
+        default_val = param['Default value']
+        exe_val = current_values.get(i, "N/A")
+        print(f"[{i:<2}] {desc:<40} {exe_val:>10} {default_val:>10}")
+    print("[b] Back to category menu")
 
-engine_pattern = (
-    "92 18 00 00 64 19 00 00 3C 0F 00 00 0A 05 00 00 "
-    "E3 21 00 00 00 00 00 00 64 19 00 00 00 00 12 00 "
-    "92 18 00 00 64 19 00 00 3C 0F 00 00 D4 04 00 00 "
-    "74 20 00 00 80 84 1E 00 64 19 00 00 00 00 12 00 "
-    "92 18 00 00 5E 1A 00 00 04 10 00 00 9C 04 00 00 "
-    "D5 1D 00 00 40 42 0F 00 5E 1A 00 00 00 00 12 00"
-)
+def prompt_edit_parameter(index, parameters, current_values):
+    try:
+        param = parameters[index]
+        current_val = current_values.get(index)
+        print(f"\nEditing: {param['Description']}")
+        print(f"Current value: {current_val}")
+        new_val = int(input("Enter new value: "))
+        current_values[index] = new_val
+        print("Value updated in session.")
+        return True
+    except (ValueError, IndexError):
+        print("Invalid index or value.")
+    except Exception as e:
+        print(f"Error: {e}")
+    return False
 
-chassis_pattern = (
-    "4C 1D 00 00 E8 80 00 00 60 6D 00 00 "
-    "FF 00 00 00 04 01 00 00 AB AA 00 00 "
-    "7E 1D 00 00 E8 80 00 00 60 6D 00 00 "
-    "FF 00 00 00 04 01 00 00 AB AA 00 00 "
-    "7E 1D 00 00 E8 80 00 00 60 6D 00 00 "
-    "FF 00 00 00 04 01 00 00 AB AA 00 00 "
-)
+def load_initial_values(parameters, exe_path, version):
+    address_key = ADDRESS_KEYS[version]
+    current_values = {}
+    for i, param in enumerate(parameters):
+        address = param[address_key].strip()
+        length = int(param['Length']) if param['Length'].isdigit() else 4
+        val = read_value_from_exe(exe_path, address, length)
+        current_values[i] = val
+    return current_values
 
-EXE_TABLE_OFFSETS = {
-    "windy101": {
-        "engine_param": 0xDD320,
-        "chassis_param": 0xDD38C
-    },
-    "dos100": {
-        "engine_param": 0xF9CD8,
-        "chassis_param": 0xF9D44
-    },
-    "dos102": {
-        "engine_param": 0xF9CD8,
-        "chassis_param": 0xF9D44
-    },
-    "rend102": {
-        "engine_param": 0x115408,
-        "chassis_param": 0x115474
-    }
-}
+def save_changes_to_exe(parameters, current_values, exe_path, version):
+    address_key = ADDRESS_KEYS[version]
+    for i, param in enumerate(parameters):
+        if i not in current_values:
+            continue
+        address = param[address_key].strip()
+        length = int(param['Length']) if param['Length'].isdigit() else 4
+        write_value_to_exe(exe_path, address, length, current_values[i])
+    print("Changes saved.")
 
-# Build default tables from engine_pattern and chassis_pattern
-engine_defaults_flat = parse_hex_pattern_to_int_list(engine_pattern)
-chassis_defaults_flat = parse_hex_pattern_to_int_list(chassis_pattern)
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python physedit_v2.py <path_to_EXE>")
+        return
 
-engine_table_default = [EngineParam(engine_defaults_flat[i*8:(i+1)*8]) for i in range(3)]
-chassis_table_default = [ChassisParam(chassis_defaults_flat[i*6:(i+1)*6]) for i in range(3)]
+    exe_path = sys.argv[1]
+    if not os.path.exists(exe_path):
+        print("File not found.")
+        return
 
-if len(sys.argv) < 2:
-    print("Usage: icr2_physedit.exe <path_to_exe>")
-    exit(1)
+    version = identify_icr2_version(exe_path)
+    if not version:
+        return
 
-file_path = sys.argv[1]
+    try:
+        parameters_by_category = load_parameters_by_category('parameters.csv')
+    except FileNotFoundError:
+        print("File 'parameters.csv' not found.")
+        return
 
-print ('ICR2 Car Physics Editor - v0.1')
-print ('May 6, 2025')
+    unsaved_changes = {}
 
-# Backup file
-backup_path = file_path + ".bak"
-if not os.path.exists(backup_path):
-    shutil.copyfile(file_path, backup_path)
-    print(f"Backup created: {backup_path}")
-else:
-    print(f"Backup already exists: {backup_path}")
+    print ('ICR2 Car Physics Editor - v0.3')
+    print ('June 1, 2025')
 
-version = identify_icr2_version(file_path)
+    while True:
+        categories = list_categories(parameters_by_category)
+        choice = input("Select an option: ").strip().lower()
 
-if version and version in EXE_TABLE_OFFSETS:
-    offsets = EXE_TABLE_OFFSETS[version]
-    engine_offset = offsets.get("engine_param")
-    chassis_offset = offsets.get("chassis_param")
+        if choice == 'q':
+            if unsaved_changes:
+                if input("You have unsaved changes. Save now? (y/n): ").strip().lower() == 'y':
+                    for cat, (params, values) in unsaved_changes.items():
+                        save_changes_to_exe(params, values, exe_path, version)
+            break
+        elif choice == 's':
+            if unsaved_changes:
+                for cat, (params, values) in unsaved_changes.items():
+                    save_changes_to_exe(params, values, exe_path, version)
+                unsaved_changes.clear()
+            else:
+                print("No changes to save.")
+            continue
 
-    if engine_offset is not None:
-        engine_table = load_engine_table(file_path, engine_offset)      
+        try:
+            selected_category = categories[int(choice)]
+        except (ValueError, IndexError):
+            print("Invalid selection.")
+            continue
 
-    else:
-        print("Engine parameter offset not found for this version.")
+        raw_params = parameters_by_category[selected_category]
+        valid_params = filter_parameters(raw_params, version)
 
-    if chassis_offset is not None:
-        chassis_table = load_chassis_table(file_path, chassis_offset)
-        
+        if selected_category in unsaved_changes:
+            current_values = unsaved_changes[selected_category][1]
+        else:
+            current_values = load_initial_values(valid_params, exe_path, version)
 
-    else:
-        print("Chassis parameter offset not found for this version.")
+        while True:
+            list_parameters_with_values(valid_params, current_values)
+            action = input("Select a parameter to edit or [b] to go back: ").strip().lower()
+            if action == 'b':
+                break
+            try:
+                idx = int(action)
+                changed = prompt_edit_parameter(idx, valid_params, current_values)
+                if changed:
+                    unsaved_changes[selected_category] = (valid_params, current_values.copy())
+            except ValueError:
+                print("Invalid selection.")
 
-else:
-    print("Unrecognized or unsupported EXE version.")
-
-while True:
-    print_table("Engine Parameters", engine_table, 8, "Engine")
-    print_table("Chassis Parameters", chassis_table, 6, "Chassis")
-
-    print("\n--- MENU ---")
-    print("[1] Edit engine value")
-    print("[2] Edit chassis value")
-    print("[3] Reset to default")
-    print("[4] Save changes")
-    print("[5] Quit")
-    choice = input("Select an option: ")
-
-    if choice == '1':
-        edit_value(engine_table, "Engine")
-    elif choice == '2':
-        edit_value(chassis_table, "Chassis")
-    elif choice == '3':
-        engine_table = deepcopy(engine_table_default)
-        chassis_table = deepcopy(chassis_table_default)
-        print("Tables reset to default values.")
-    elif choice == '4':
-        save_table_to_file(file_path, engine_offset, engine_table)
-        save_table_to_file(file_path, chassis_offset, chassis_table)
-        print("Changes saved.")
-    elif choice == '5':
-        print("Exiting.")
-        break
-    else:
-        print("Invalid selection.")
+if __name__ == "__main__":
+    main()

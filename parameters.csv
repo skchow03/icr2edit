@@ -1,0 +1,50 @@
+DOS address,Windy address,Rendition address,Length,Data type,Default value,Category,Description
+F9CD8,DD320,115408,4,UInt32,6290,Engine parameters Ford,Fuel consumption rate
+F9CDC,DD324,11540C,4,UInt32,6500,Engine parameters Ford,RPM upshift point
+F9CE0,DD328,115410,4,UInt32,3900,Engine parameters Ford,RPM downshift point
+F9CE4,DD32C,115414,4,UInt32,1290,Engine parameters Ford,Torque RPM scale
+F9CE8,DD330,115418,4,UInt32,8675,Engine parameters Ford,Torque drop-off rate
+F9CEC,DD334,11541C,4,UInt32,0,Engine parameters Ford,Torque adjustment
+F9CF0,DD338,115420,4,UInt32,6500,Engine parameters Ford,RPM limit
+F9CF8,,,4,UInt32,6282,Engine parameters Mercedes,Fuel consumption rate
+F9CFC,,,4,UInt32,6500,Engine parameters Mercedes,RPM upshift point
+F9D00,,,4,UInt32,3900,Engine parameters Mercedes,RPM downshift point
+F9D04,,,4,UInt32,1236,Engine parameters Mercedes,Torque RPM scale
+F9D08,,,4,UInt32,8308,Engine parameters Mercedes,Torque drop-off rate
+F9D0C,,,4,UInt32,2000000,Engine parameters Mercedes,Torque adjustment
+F9D10,,,4,UInt32,6500,Engine parameters Mercedes,RPM limit
+F9D18,,,4,UInt32,6282,Engine parameters Honda,Fuel consumption rate
+F9D1C,,,4,UInt32,6750,Engine parameters Honda,RPM upshift point
+F9D20,,,4,UInt32,4100,Engine parameters Honda,RPM downshift point
+F9D24,,,4,UInt32,1180,Engine parameters Honda,Torque RPM scale
+F9D28,,,4,UInt32,7637,Engine parameters Honda,Torque drop-off rate
+F9D2C,,,4,UInt32,1000000,Engine parameters Honda,Torque adjustment
+F9D30,,,4,UInt32,6750,Engine parameters Honda,RPM limit
+F9D44,,,4,UInt32,7500,Chassis parameters Lola,Engine placement
+F9D48,,,4,UInt32,33000,Chassis parameters Lola,Road course downforce
+F9D4C,,,4,UInt32,28000,Chassis parameters Lola,Speedway downforce
+F9D50,,,4,UInt32,255,Chassis parameters Lola,Road course weight
+F9D54,,,4,UInt32,260,Chassis parameters Lola,Speedway weight
+F9D58,,,4,UInt32,43691,Chassis parameters Lola,Chassis weight
+F9D5C,,,4,UInt32,7550,Chassis parameters Penske,Engine placement
+F9D60,,,4,UInt32,33000,Chassis parameters Penske,Road course downforce
+F9D64,,,4,UInt32,28000,Chassis parameters Penske,Speedway downforce
+F9D68,,,4,UInt32,255,Chassis parameters Penske,Road course weight
+F9D6C,,,4,UInt32,260,Chassis parameters Penske,Speedway weight
+F9D70,,,4,UInt32,43691,Chassis parameters Penske,Chassis weight
+F9D74,,,4,UInt32,7550,Chassis parameters Reynard,Engine placement
+F9D78,,,4,UInt32,33000,Chassis parameters Reynard,Road course downforce
+F9D7C,,,4,UInt32,28000,Chassis parameters Reynard,Speedway downforce
+F9D80,,,4,UInt32,255,Chassis parameters Reynard,Road course weight
+F9D84,,,4,UInt32,260,Chassis parameters Reynard,Speedway weight
+F9D88,,,4,UInt32,43691,Chassis parameters Reynard,Chassis weight
+,71CF5,,2,UInt16,5000,Dashboard,Frozen lap time display
+6DEF2,6D7BC,,2,UInt16,1000,Engine physics,Engine idle RPM
+6DF0A,6D7CB,,2,UInt16,1000,Engine physics,Engine idle RPM
+6DF30,6D7EA,,2,UInt16,250,Engine physics,RPM change rate
+6DF37,6D7F0,,2,UInt16,250,Engine physics,RPM change rate
+6E002,6D8AF,,2,UInt16,6000,Engine physics,Boost related
+6E009,6D8C5,,2,UInt16,6000,Engine physics,Boost related
+None,6D8CB,,2,UInt16,6000,Engine physics,Boost related
+6E00E,6D8CF,,2,UInt16,17929,Engine physics,Boost related
+,6DE61,,2,UInt16,750,Engine physics,RPM limit adjustment
