@@ -7,7 +7,7 @@ A command-line tool for viewing and editing engine and chassis parameters in Ind
 # Version history
 
 - v0.3 - June 1, 2025: redid the interface and added more parameters to edit
-
+- v0.31 - June 3, 2025: added validation check when inputting new values
 
 ---
 
