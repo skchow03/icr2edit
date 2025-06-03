@@ -54,6 +54,8 @@ def read_value_from_exe(exe_path, address_hex, length):
             return struct.unpack('<H', data)[0]
         elif length == 4:
             return struct.unpack('<I', data)[0]
+        elif length == 1:
+            return struct.unpack('<B', data)[0]
         else:
             return int.from_bytes(data, 'little')
     return None
@@ -70,6 +72,8 @@ def write_value_to_exe(exe_path, address_hex, length, value):
             f.write(struct.pack('<H', value))
         elif length == 4:
             f.write(struct.pack('<I', value))
+        elif length == 1:
+            f.write(struct.pack('<B', value))
         else:
             f.write(value.to_bytes(length, 'little'))
 
@@ -108,16 +112,38 @@ def prompt_edit_parameter(index, parameters, current_values):
     try:
         param = parameters[index]
         current_val = current_values.get(index)
-        print(f"\nEditing: {param['Description']}")
+        desc = param['Description']
+        data_type = param.get('Data type', '').strip()
+
+        type_bounds = {
+            'UInt8': (0, 0xFF),
+            'UInt16': (0, 0xFFFF),
+            'UInt32': (0, 0xFFFFFFFF),
+        }
+
+        min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
+
+        print(f"\nEditing: {desc}")
         print(f"Current value: {current_val}")
-        new_val = int(input("Enter new value: "))
+        print(f"Expected type: {data_type} (range: {min_val} to {max_val})")
+
+        raw_input_val = input("Enter new value: ").strip()
+        new_val = int(raw_input_val)
+
+        if not (min_val <= new_val <= max_val):
+            print(f"Error: Value out of range for {data_type}.")
+            return False
+
         current_values[index] = new_val
         print("Value updated in session.")
         return True
-    except (ValueError, IndexError):
-        print("Invalid index or value.")
+
+    except ValueError:
+        print("Invalid input: please enter a valid integer.")
+    except IndexError:
+        print("Invalid index.")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Unexpected error: {e}")
     return False
 
 def load_initial_values(parameters, exe_path, version):
@@ -162,8 +188,8 @@ def main():
 
     unsaved_changes = {}
 
-    print ('ICR2 Car Physics Editor - v0.3')
-    print ('June 1, 2025')
+    print('ICR2 Car Physics Editor - v0.31')
+    print('June 3, 2025')
 
     while True:
         categories = list_categories(parameters_by_category)

@@ -1,43 +1,43 @@
 DOS address,Windy address,Rendition address,Length,Data type,Default value,Category,Description
-F9CD8,DD320,115408,4,UInt32,6290,Engine parameters Ford,Fuel consumption rate
-F9CDC,DD324,11540C,4,UInt32,6500,Engine parameters Ford,RPM upshift point
-F9CE0,DD328,115410,4,UInt32,3900,Engine parameters Ford,RPM downshift point
-F9CE4,DD32C,115414,4,UInt32,1290,Engine parameters Ford,Torque RPM scale
-F9CE8,DD330,115418,4,UInt32,8675,Engine parameters Ford,Torque drop-off rate
+F9CD8,DD320,115408,2,UInt16,6290,Engine parameters Ford,Fuel consumption rate
+F9CDC,DD324,11540C,2,UInt16,6500,Engine parameters Ford,RPM upshift point
+F9CE0,DD328,115410,2,UInt16,3900,Engine parameters Ford,RPM downshift point
+F9CE4,DD32C,115414,2,UInt16,1290,Engine parameters Ford,Torque RPM scale
+F9CE8,DD330,115418,2,UInt16,8675,Engine parameters Ford,Torque drop-off rate
 F9CEC,DD334,11541C,4,UInt32,0,Engine parameters Ford,Torque adjustment
-F9CF0,DD338,115420,4,UInt32,6500,Engine parameters Ford,RPM limit
-F9CF8,DD340,115428,4,UInt32,6282,Engine parameters Mercedes,Fuel consumption rate
-F9CFC,DD344,11542C,4,UInt32,6500,Engine parameters Mercedes,RPM upshift point
-F9D00,DD348,115430,4,UInt32,3900,Engine parameters Mercedes,RPM downshift point
-F9D04,DD34C,115434,4,UInt32,1236,Engine parameters Mercedes,Torque RPM scale
-F9D08,DD350,115438,4,UInt32,8308,Engine parameters Mercedes,Torque drop-off rate
+F9CF0,DD338,115420,2,UInt16,6500,Engine parameters Ford,RPM limit
+F9CF8,DD340,115428,2,UInt16,6282,Engine parameters Mercedes,Fuel consumption rate
+F9CFC,DD344,11542C,2,UInt16,6500,Engine parameters Mercedes,RPM upshift point
+F9D00,DD348,115430,2,UInt16,3900,Engine parameters Mercedes,RPM downshift point
+F9D04,DD34C,115434,2,UInt16,1236,Engine parameters Mercedes,Torque RPM scale
+F9D08,DD350,115438,2,UInt16,8308,Engine parameters Mercedes,Torque drop-off rate
 F9D0C,DD354,11543C,4,UInt32,2000000,Engine parameters Mercedes,Torque adjustment
-F9D10,DD358,115440,4,UInt32,6500,Engine parameters Mercedes,RPM limit
-F9D18,DD360,115448,4,UInt32,6282,Engine parameters Honda,Fuel consumption rate
-F9D1C,DD364,11544C,4,UInt32,6750,Engine parameters Honda,RPM upshift point
-F9D20,DD368,115450,4,UInt32,4100,Engine parameters Honda,RPM downshift point
-F9D24,DD36C,115454,4,UInt32,1180,Engine parameters Honda,Torque RPM scale
-F9D28,DD370,115458,4,UInt32,7637,Engine parameters Honda,Torque drop-off rate
+F9D10,DD358,115440,2,UInt16,6500,Engine parameters Mercedes,RPM limit
+F9D18,DD360,115448,2,UInt16,6282,Engine parameters Honda,Fuel consumption rate
+F9D1C,DD364,11544C,2,UInt16,6750,Engine parameters Honda,RPM upshift point
+F9D20,DD368,115450,2,UInt16,4100,Engine parameters Honda,RPM downshift point
+F9D24,DD36C,115454,2,UInt16,1180,Engine parameters Honda,Torque RPM scale
+F9D28,DD370,115458,2,UInt16,7637,Engine parameters Honda,Torque drop-off rate
 F9D2C,DD374,11545C,4,UInt32,1000000,Engine parameters Honda,Torque adjustment
-F9D30,DD378,115460,4,UInt32,6750,Engine parameters Honda,RPM limit
-F9D44,DD38C,115474,4,UInt32,7500,Chassis parameters Lola,Engine placement ??
-F9D48,DD390,115478,4,UInt32,33000,Chassis parameters Lola,Road course downforce
-F9D4C,DD394,11547C,4,UInt32,28000,Chassis parameters Lola,Speedway downforce
-F9D50,DD398,115480,4,UInt32,255,Chassis parameters Lola,Road course weight balance ??
-F9D54,DD39C,115484,4,UInt32,260,Chassis parameters Lola,Speedway weight balance ??
-F9D58,DD3A0,115488,4,UInt32,43691,Chassis parameters Lola,Chassis weight
-F9D5C,DD3A4,11548C,4,UInt32,7550,Chassis parameters Penske,Engine placement ??
-F9D60,DD3A8,115490,4,UInt32,33000,Chassis parameters Penske,Road course downforce
-F9D64,DD3AC,115494,4,UInt32,28000,Chassis parameters Penske,Speedway downforce
-F9D68,DD3B0,115498,4,UInt32,255,Chassis parameters Penske,Road course weight balance ??
-F9D6C,DD3B4,11549C,4,UInt32,260,Chassis parameters Penske,Speedway weight balance ??
-F9D70,DD3B8,1154A0,4,UInt32,43691,Chassis parameters Penske,Chassis weight
-F9D74,DD3BC,1154A4,4,UInt32,7550,Chassis parameters Reynard,Engine placement ??
-F9D78,DD3C0,1154A8,4,UInt32,33000,Chassis parameters Reynard,Road course downforce
-F9D7C,DD3C4,1154AC,4,UInt32,28000,Chassis parameters Reynard,Speedway downforce
-F9D80,DD3C8,1154B0,4,UInt32,255,Chassis parameters Reynard,Road course weight balance ??
-F9D84,DD3CC,1154B4,4,UInt32,260,Chassis parameters Reynard,Speedway weight balance ??
-F9D88,DD3D0,1154B8,4,UInt32,43691,Chassis parameters Reynard,Chassis weight
+F9D30,DD378,115460,2,UInt16,6750,Engine parameters Honda,RPM limit
+F9D44,DD38C,115474,2,UInt16,7500,Chassis parameters Lola,Engine placement ??
+F9D48,DD390,115478,2,UInt16,33000,Chassis parameters Lola,Road course downforce
+F9D4C,DD394,11547C,2,UInt16,28000,Chassis parameters Lola,Speedway downforce
+F9D50,DD398,115480,2,UInt16,255,Chassis parameters Lola,Road course weight balance ??
+F9D54,DD39C,115484,2,UInt16,260,Chassis parameters Lola,Speedway weight balance ??
+F9D58,DD3A0,115488,2,UInt16,43691,Chassis parameters Lola,Chassis weight
+F9D5C,DD3A4,11548C,2,UInt16,7550,Chassis parameters Penske,Engine placement ??
+F9D60,DD3A8,115490,2,UInt16,33000,Chassis parameters Penske,Road course downforce
+F9D64,DD3AC,115494,2,UInt16,28000,Chassis parameters Penske,Speedway downforce
+F9D68,DD3B0,115498,2,UInt16,255,Chassis parameters Penske,Road course weight balance ??
+F9D6C,DD3B4,11549C,2,UInt16,260,Chassis parameters Penske,Speedway weight balance ??
+F9D70,DD3B8,1154A0,2,UInt16,43691,Chassis parameters Penske,Chassis weight
+F9D74,DD3BC,1154A4,2,UInt16,7550,Chassis parameters Reynard,Engine placement ??
+F9D78,DD3C0,1154A8,2,UInt16,33000,Chassis parameters Reynard,Road course downforce
+F9D7C,DD3C4,1154AC,2,UInt16,28000,Chassis parameters Reynard,Speedway downforce
+F9D80,DD3C8,1154B0,2,UInt16,255,Chassis parameters Reynard,Road course weight balance ??
+F9D84,DD3CC,1154B4,2,UInt16,260,Chassis parameters Reynard,Speedway weight balance ??
+F9D88,DD3D0,1154B8,2,UInt16,43691,Chassis parameters Reynard,Chassis weight
 ,71CF5,,2,UInt16,5000,Other,Frozen lap time display
 ,2C4A7,,4,UInt32,1800000,Other,Failure rate
 6DEF2,6D7BC,,2,UInt16,1000,Engine physics,Engine idle RPM
@@ -50,7 +50,7 @@ F9D88,DD3D0,1154B8,4,UInt32,43691,Chassis parameters Reynard,Chassis weight
 ,6D8CB,,2,UInt16,6000,Engine physics,Boost related
 6E00E,6D8CF,,2,UInt16,17929,Engine physics,Boost related
 6E4EE,6DE61,,2,UInt16,750,Engine physics,RPM limit adjustment
-,6A937,,4,UInt32,49151,Engine physics,Boost related
+,6A937,,2,UInt16,49151,Engine physics,Boost related
 700FD,6FA0E,,4,UInt32,9830400,Engine physics,Engine health ??
 FEFD4,DBE68,,1,UInt8,20,Points 1-12,Pos 1
 FEFD5,DBE69,,1,UInt8,16,Points 1-12,Pos 2
@@ -92,22 +92,22 @@ FEFF8,DBE8C,,1,UInt8,0,Points 34-40,Pos 37
 FEFF9,DBE8D,,1,UInt8,0,Points 34-40,Pos 38
 FEFFA,DBE8E,,1,UInt8,0,Points 34-40,Pos 39
 FEFFB,DBE8F,,1,UInt8,0,Points 34-40,Pos 40
-F9CC6,DD30E,,4,UInt16,1158,Tire life,RF
-F9CCA,DD312,,4,UInt16,1158,Tire life,RR
-F9CCE,DD316,,4,UInt16,1158,Tire life,LR
-F9CD2,DD31A,,4,UInt16,1158,Tire life,LF
-F9CB4,DD2FC,,4,UInt16,261,Tire unknown,RF
-F9CB8,DD300,,4,UInt16,261,Tire unknown,RR
-F9CBC,DD304,,4,UInt16,261,Tire unknown,LR
-F9CC0,DD308,,4,UInt16,261,Tire unknown,LF
-F9C6C,DD2B4,,4,UInt16,57344,Brake bias,Value 1
-F9C70,DD2B8,,4,UInt16,50322,Brake bias,Value 2
-F9C74,DD2BC,,4,UInt16,43300,Brake bias,Value 3
-F9C78,DD2C0,,4,UInt16,36279,Brake bias,Value 4
-F9C7C,DD2C4,,4,UInt16,29257,Brake bias,Value 5
-F9C80,DD2C8,,4,UInt16,22235,Brake bias,Value 6
-F9C84,DD2CC,,4,UInt16,15214,Brake bias,Value 7
-F9C88,DD2D0,,4,UInt16,8192,Brake bias,Value 8
-F9C8C,DD2D4,,4,UInt16,27428,Brake bias,Default front brake ??
-F9C90,DD2D8,,4,UInt16,29916,Brake bias,Default rear brake ??
-F9C94,DD2DC,,4,UInt16,9,Other,Default boost knob
+F9CC6,DD30E,,2,UInt16,1158,Tire life,RF
+F9CCA,DD312,,2,UInt16,1158,Tire life,RR
+F9CCE,DD316,,2,UInt16,1158,Tire life,LR
+F9CD2,DD31A,,2,UInt16,1158,Tire life,LF
+F9CB4,DD2FC,,2,UInt16,261,Tire unknown,RF
+F9CB8,DD300,,2,UInt16,261,Tire unknown,RR
+F9CBC,DD304,,2,UInt16,261,Tire unknown,LR
+F9CC0,DD308,,2,UInt16,261,Tire unknown,LF
+F9C6C,DD2B4,,2,UInt16,57344,Brake bias,Value 1
+F9C70,DD2B8,,2,UInt16,50322,Brake bias,Value 2
+F9C74,DD2BC,,2,UInt16,43300,Brake bias,Value 3
+F9C78,DD2C0,,2,UInt16,36279,Brake bias,Value 4
+F9C7C,DD2C4,,2,UInt16,29257,Brake bias,Value 5
+F9C80,DD2C8,,2,UInt16,22235,Brake bias,Value 6
+F9C84,DD2CC,,2,UInt16,15214,Brake bias,Value 7
+F9C88,DD2D0,,2,UInt16,8192,Brake bias,Value 8
+F9C8C,DD2D4,,2,UInt16,27428,Brake bias,Default front brake ??
+F9C90,DD2D8,,2,UInt16,29916,Brake bias,Default rear brake ??
+F9C94,DD2DC,,1,UInt8,9,Other,Default boost knob
