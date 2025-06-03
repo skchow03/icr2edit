@@ -20,23 +20,23 @@ F9D24,DD36C,115454,4,UInt32,1180,Engine parameters Honda,Torque RPM scale
 F9D28,DD370,115458,4,UInt32,7637,Engine parameters Honda,Torque drop-off rate
 F9D2C,DD374,11545C,4,UInt32,1000000,Engine parameters Honda,Torque adjustment
 F9D30,DD378,115460,4,UInt32,6750,Engine parameters Honda,RPM limit
-F9D44,DD38C,115474,4,UInt32,7500,Chassis parameters Lola,Engine placement
+F9D44,DD38C,115474,4,UInt32,7500,Chassis parameters Lola,Engine placement ??
 F9D48,DD390,115478,4,UInt32,33000,Chassis parameters Lola,Road course downforce
 F9D4C,DD394,11547C,4,UInt32,28000,Chassis parameters Lola,Speedway downforce
-F9D50,DD398,115480,4,UInt32,255,Chassis parameters Lola,Road course weight balance
-F9D54,DD39C,115484,4,UInt32,260,Chassis parameters Lola,Speedway weight balance
+F9D50,DD398,115480,4,UInt32,255,Chassis parameters Lola,Road course weight balance ??
+F9D54,DD39C,115484,4,UInt32,260,Chassis parameters Lola,Speedway weight balance ??
 F9D58,DD3A0,115488,4,UInt32,43691,Chassis parameters Lola,Chassis weight
-F9D5C,DD3A4,11548C,4,UInt32,7550,Chassis parameters Penske,Engine placement
+F9D5C,DD3A4,11548C,4,UInt32,7550,Chassis parameters Penske,Engine placement ??
 F9D60,DD3A8,115490,4,UInt32,33000,Chassis parameters Penske,Road course downforce
 F9D64,DD3AC,115494,4,UInt32,28000,Chassis parameters Penske,Speedway downforce
-F9D68,DD3B0,115498,4,UInt32,255,Chassis parameters Penske,Road course weight balance
-F9D6C,DD3B4,11549C,4,UInt32,260,Chassis parameters Penske,Speedway weight balance
+F9D68,DD3B0,115498,4,UInt32,255,Chassis parameters Penske,Road course weight balance ??
+F9D6C,DD3B4,11549C,4,UInt32,260,Chassis parameters Penske,Speedway weight balance ??
 F9D70,DD3B8,1154A0,4,UInt32,43691,Chassis parameters Penske,Chassis weight
-F9D74,DD3BC,1154A4,4,UInt32,7550,Chassis parameters Reynard,Engine placement
+F9D74,DD3BC,1154A4,4,UInt32,7550,Chassis parameters Reynard,Engine placement ??
 F9D78,DD3C0,1154A8,4,UInt32,33000,Chassis parameters Reynard,Road course downforce
 F9D7C,DD3C4,1154AC,4,UInt32,28000,Chassis parameters Reynard,Speedway downforce
-F9D80,DD3C8,1154B0,4,UInt32,255,Chassis parameters Reynard,Road course weight balance
-F9D84,DD3CC,1154B4,4,UInt32,260,Chassis parameters Reynard,Speedway weight balance
+F9D80,DD3C8,1154B0,4,UInt32,255,Chassis parameters Reynard,Road course weight balance ??
+F9D84,DD3CC,1154B4,4,UInt32,260,Chassis parameters Reynard,Speedway weight balance ??
 F9D88,DD3D0,1154B8,4,UInt32,43691,Chassis parameters Reynard,Chassis weight
 ,71CF5,,2,UInt16,5000,Other,Frozen lap time display
 ,2C4A7,,4,UInt32,1800000,Other,Failure rate
@@ -90,3 +90,11 @@ FEFF8,DBE8C,,1,UInt8,0,Points 34-40,Pos 37
 FEFF9,DBE8D,,1,UInt8,0,Points 34-40,Pos 38
 FEFFA,DBE8E,,1,UInt8,0,Points 34-40,Pos 39
 FEFFB,DBE8F,,1,UInt8,0,Points 34-40,Pos 40
+F9CC6,DD30E,,4,UInt16,1158,Tire life,RF
+F9CCA,DD312,,4,UInt16,1158,Tire life,RR
+F9CCE,DD316,,4,UInt16,1158,Tire life,LR
+F9CD2,DD31A,,4,UInt16,1158,Tire life,LF
+F9CB4,DD2FC,,4,UInt16,261,Tire unknown,RF
+F9CB8,DD300,,4,UInt16,261,Tire unknown,RR
+F9CBC,DD304,,4,UInt16,261,Tire unknown,LR
+F9CC0,DD308,,4,UInt16,261,Tire unknown,LF
