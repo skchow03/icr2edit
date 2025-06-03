@@ -108,6 +108,6 @@ F9C7C,DD2C4,,4,UInt16,29257,Brake bias,Value 5
 F9C80,DD2C8,,4,UInt16,22235,Brake bias,Value 6
 F9C84,DD2CC,,4,UInt16,15214,Brake bias,Value 7
 F9C88,DD2D0,,4,UInt16,8192,Brake bias,Value 8
-F9C8C,DD2D4,,4,UInt16,27428,Brake bias,Value 9 ??
-F9C90,DD2D8,,4,UInt16,29916,Brake bias,Value 10 ??
-F9C94,DD2DC,,4,UInt16,9,Brake bias,Value 11 ??
+F9C8C,DD2D4,,4,UInt16,27428,Other,Unknown 1
+F9C90,DD2D8,,4,UInt16,29916,Other,Unknown 2
+F9C94,DD2DC,,4,UInt16,9,Other,Default boost knob
