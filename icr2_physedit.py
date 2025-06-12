@@ -168,7 +168,7 @@ def save_changes_to_exe(parameters, current_values, exe_path, version):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python physedit_v2.py <path_to_EXE>")
+        print("Usage: python icr2_physedit.py <path_to_EXE>")
         return
 
     exe_path = sys.argv[1]
@@ -180,8 +180,9 @@ def main():
     if not version:
         return
 
+    parameters_csv = os.path.join(os.path.dirname(__file__), 'parameters.csv')
     try:
-        parameters_by_category = load_parameters_by_category('parameters.csv')
+        parameters_by_category = load_parameters_by_category(parameters_csv)
     except FileNotFoundError:
         print("File 'parameters.csv' not found.")
         return
