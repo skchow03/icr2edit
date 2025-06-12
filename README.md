@@ -18,7 +18,7 @@ A command-line tool for viewing and editing engine and chassis parameters in Ind
 - Add or remove editable parameters using parameters.csv
 - Edit any individual parameter by engine/chassis and index
 - Save changes directly to the EXE
-- No GUI required — runs entirely in the terminal
+- Runs entirely in the terminal, with an optional Tkinter-based GUI
 
 ---
 
