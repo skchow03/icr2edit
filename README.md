@@ -6,6 +6,7 @@ A command-line tool for viewing and editing engine and chassis parameters in Ind
 
 # Version history
 
+- v0.4 - July 1, 2025: Added GUI, general improvements
 - v0.3 - June 1, 2025: redid the interface and added more parameters to edit
 - v0.31 - June 3, 2025: added validation check when inputting new values
 
@@ -18,7 +19,6 @@ A command-line tool for viewing and editing engine and chassis parameters in Ind
 - Add or remove editable parameters using parameters.csv
 - Edit any individual parameter by engine/chassis and index
 - Save changes directly to the EXE
-- Runs entirely in the terminal, with an optional PyQt-based GUI for slider-based editing and a status bar showing version and save state
 
 ---
 
@@ -31,11 +31,11 @@ A command-line tool for viewing and editing engine and chassis parameters in Ind
 
 Download the precompiled .exe from Releases or run from source:
 
-    python icr2_physedit.py path/to/WINDY.EXE
+    python icr2edit.py
 
 Or:
 
-    icr2_physedit.exe path/to/INDYCAR.EXE
+    icr2edit.exe
 
 ---
 
@@ -49,17 +49,6 @@ DOS 1.0.2     | INDYCAR.EXE   | dos102
 Rendition     | CART.EXE      | rend102
 
 The editor determines version by file size and uses version-specific hardcoded offsets.
-
----
-
-## Building the EXE (Optional)
-
-To create a standalone .exe from the source:
-
-    pip install pyinstaller
-    pyinstaller --onefile --console icr2_physedit.py
-
-Your .exe will appear in the dist/ folder.
 
 ---
 
