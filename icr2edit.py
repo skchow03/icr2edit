@@ -1,12 +1,17 @@
+# Standard libraries
 import csv
 import os
 import struct
 import sys
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QPixmap, QIcon
 import json
 
+# PyQt5 for GUI
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtGui import QPixmap, QIcon
 
+# ---- Constants and Mappings ----
+
+# Known EXE file sizes and their associated ICR2 versions
 EXE_VERSIONS = {
     1142371: "dos100",
     1142387: "dos102",
@@ -14,6 +19,7 @@ EXE_VERSIONS = {
     1916928: "windy101",
 }
 
+# Maps ICR2 version names to the CSV address field to use
 ADDRESS_KEYS = {
     "dos100": "DOS address",
     "dos102": "DOS address",
@@ -21,9 +27,13 @@ ADDRESS_KEYS = {
     "rend102": "Rendition address",
 }
 
+# JSON file to store last opened folder path
 SETTINGS_FILE = "settings.json"
 
+# ---- Utility Functions ----
+
 def load_last_folder():
+    """Load last used folder from settings.json (if it exists)."""
     try:
         with open(SETTINGS_FILE, "r") as f:
             return json.load(f).get("last_folder", "")
@@ -31,25 +41,29 @@ def load_last_folder():
         return ""
 
 def save_last_folder(folder_path):
+    """Save the folder path to settings.json for future sessions."""
     try:
         with open(SETTINGS_FILE, "w") as f:
             json.dump({"last_folder": folder_path}, f)
     except Exception:
         pass
 
-
 def resource_path(filename):
+    """
+    Return the full path to a resource file, whether running from
+    source or from a PyInstaller-built EXE (with _MEIPASS).
+    """
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, filename)
     return os.path.abspath(filename)
 
-
 def identify_icr2_version(file_path):
+    """Identify the ICR2 EXE version based on file size."""
     size = os.path.getsize(file_path)
     return EXE_VERSIONS.get(size)
 
-
 def load_parameters_by_category(file_path):
+    """Load and group parameter rows from parameters.csv by category."""
     parameters_by_category = {}
     with open(file_path, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
@@ -60,8 +74,8 @@ def load_parameters_by_category(file_path):
             parameters_by_category.setdefault(category, []).append(row)
     return parameters_by_category
 
-
 def read_value_from_exe(exe_path, address_hex, length):
+    """Read a typed value of `length` bytes from the EXE at hex offset."""
     try:
         offset = int(address_hex, 16)
     except (ValueError, TypeError):
@@ -71,33 +85,33 @@ def read_value_from_exe(exe_path, address_hex, length):
         data = f.read(length)
         if len(data) != length:
             return None
+        if length == 1:
+            return struct.unpack("<B", data)[0]
         if length == 2:
             return struct.unpack("<H", data)[0]
         if length == 4:
             return struct.unpack("<I", data)[0]
-        if length == 1:
-            return struct.unpack("<B", data)[0]
-        return int.from_bytes(data, "little")
-
+        return int.from_bytes(data, "little")  # fallback
 
 def write_value_to_exe(exe_path, address_hex, length, value):
+    """Write a typed value of `length` bytes to the EXE at hex offset."""
     try:
         offset = int(address_hex, 16)
     except (ValueError, TypeError):
         return
     with open(exe_path, "rb+") as f:
         f.seek(offset)
-        if length == 2:
+        if length == 1:
+            f.write(struct.pack("<B", value))
+        elif length == 2:
             f.write(struct.pack("<H", value))
         elif length == 4:
             f.write(struct.pack("<I", value))
-        elif length == 1:
-            f.write(struct.pack("<B", value))
         else:
             f.write(value.to_bytes(length, "little"))
 
-
 def filter_parameters(parameters, version):
+    """Filter out parameters missing a valid address for the current version."""
     address_key = ADDRESS_KEYS.get(version, "Windy address")
     valid = []
     for p in parameters:
@@ -109,8 +123,8 @@ def filter_parameters(parameters, version):
             continue
     return valid
 
-
 def load_initial_values(parameters, exe_path, version):
+    """Read the current values from the EXE for a list of parameter rows."""
     address_key = ADDRESS_KEYS[version]
     current_values = {}
     for i, param in enumerate(parameters):
@@ -120,8 +134,11 @@ def load_initial_values(parameters, exe_path, version):
         current_values[i] = val
     return current_values
 
+# ---- GUI Dialog for Editing a Single Parameter ----
 
 class ParameterEditDialog(QtWidgets.QDialog):
+    """Dialog with a spinbox to edit a numeric parameter."""
+
     def __init__(self, description, value, min_val, max_val, parent=None):
         super().__init__(parent)
         self.setWindowTitle(description)
@@ -129,20 +146,20 @@ class ParameterEditDialog(QtWidgets.QDialog):
 
         layout = QtWidgets.QVBoxLayout(self)
 
-        self.slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        max_slider = min(max_val, 2147483647)
-        self.slider.setMinimum(min_val)
-        self.slider.setMaximum(max_slider)
-        self.slider.setValue(value)
+        # Description label
+        label = QtWidgets.QLabel(f"Enter new value for: {description}")
+        layout.addWidget(label)
 
-        self.input_box = QtWidgets.QLineEdit(str(value))
+        # SpinBox setup
+        self.spinbox = QtWidgets.QSpinBox()
+        self.spinbox.setMinimum(min_val)
+        self.spinbox.setMaximum(min(max_val, 2147483647))  # protect from overflow
+        self.spinbox.setValue(value)
+        self.spinbox.setSingleStep(1)
+        self.spinbox.setAccelerated(True)  # allow press-and-hold auto increment
+        layout.addWidget(self.spinbox)
 
-        self.slider.valueChanged.connect(self.on_slider_change)
-        self.input_box.textChanged.connect(self.on_text_change)
-
-        layout.addWidget(self.slider)
-        layout.addWidget(self.input_box)
-
+        # OK/Cancel button box
         btn_box = QtWidgets.QDialogButtonBox(
             QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel
         )
@@ -150,55 +167,85 @@ class ParameterEditDialog(QtWidgets.QDialog):
         btn_box.rejected.connect(self.reject)
         layout.addWidget(btn_box)
 
-        self._min = min_val
-        self._max = max_val
+        # Update internal value when spinbox changes
+        self.spinbox.valueChanged.connect(self.on_value_change)
 
-    def on_slider_change(self, value):
-        self.input_box.setText(str(value))
+    def on_value_change(self, val):
+        self.value = val
 
-    def on_text_change(self, text):
-        try:
-            val = int(text)
-        except ValueError:
-            return
-        if self._min <= val <= self._max:
-            self.slider.setValue(val)
-            self.value = val
 
+# ---- Main GUI Class ----
 
 class PhysicsEditorGUI(QtWidgets.QMainWindow):
+    """Main window for ICR2Edit."""
+
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("ICR2Edit v0.4")
+        self.setWindowTitle("ICR2Edit v0.4.1")
+        self.setWindowIcon(QIcon(resource_path("icon.ico")))
         self.resize(800, 600)
 
-        self.setWindowIcon(QIcon(resource_path("icon.ico")))  # or .ico
-
-
+        # State
         self.exe_path = None
         self.version = None
         self.parameters_by_category = {}
         self.current_values = {}
         self.unsaved_changes = {}
 
+        # GUI Setup
         self.status = self.statusBar()
         self.status.showMessage("No EXE loaded")
         self._create_widgets()
         self.show_about()
 
     def update_status(self):
+        """Update window title and status bar based on EXE path and save state."""
         if not self.exe_path:
             self.status.showMessage("No EXE loaded")
-            self.setWindowTitle("ICR2Edit v0.4")
+            self.setWindowTitle("ICR2Edit v0.4.1")
             return
         changed = "modified" if self.unsaved_changes else "saved"
         base_name = os.path.basename(self.exe_path)
-        title = f"ICR2Edit v0.4 - {base_name} [{self.version}, {changed}]"
-        self.setWindowTitle(title)
+        self.setWindowTitle(f"ICR2Edit v0.4.1 - {base_name} [{self.version}, {changed}]")
         self.status.clearMessage()
+
+    def revert_all_changes(self):
+        """Prompt and revert all changes across all categories."""
+        if not self.exe_path or not self.parameters_by_category:
+            return
+
+        reply = QtWidgets.QMessageBox.question(
+            self,
+            "Revert All Changes",
+            "Are you sure you want to discard ALL unsaved changes\n"
+            "and reload parameter values from the EXE?",
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+            QtWidgets.QMessageBox.No,
+        )
+        if reply != QtWidgets.QMessageBox.Yes:
+            return
+
+        self.unsaved_changes.clear()
+        self.category_list.clear()
+        self.category_list.addItems(self.parameters_by_category.keys())
+        self.param_table.setRowCount(0)
+        self.current_values.clear()
+        self.update_status()
+        self.update_category_list_styles()
+
+        # Try to reselect the current category to repopulate the table
+        index = self.category_list.currentRow()
+        if index >= 0:
+            self.on_category_select(index)
+
+        # Restore selection to the first category (or previous if known)
+        if self.category_list.count() > 0:
+            self.category_list.setCurrentRow(0)  # triggers on_category_select automatically
+
 
 
     def closeEvent(self, event):
+        """Prompt to save if there are unsaved changes on exit."""
         if self.unsaved_changes:
             reply = QtWidgets.QMessageBox.question(
                 self,
@@ -207,43 +254,39 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel,
                 QtWidgets.QMessageBox.Save,
             )
-
             if reply == QtWidgets.QMessageBox.Save:
                 self.save_all()
                 event.accept()
             elif reply == QtWidgets.QMessageBox.Discard:
                 event.accept()
-            else:  # Cancel
+            else:
                 event.ignore()
         else:
             event.accept()
 
     def show_about(self):
+        """Display the About dialog with image and info."""
         dialog = QtWidgets.QDialog(self)
         dialog.setFixedWidth(420)
-
         dialog.setWindowTitle("About ICR2Edit")
         layout = QtWidgets.QVBoxLayout(dialog)
 
-        # Load and resize image
+        # Image
         image_label = QtWidgets.QLabel()
         pixmap = QPixmap(resource_path("title.png"))
-
         if not pixmap.isNull():
-            scaled = pixmap.scaledToWidth(400, QtCore.Qt.SmoothTransformation)
-            image_label.setPixmap(scaled)
+            image_label.setPixmap(pixmap.scaledToWidth(400, QtCore.Qt.SmoothTransformation))
             image_label.setAlignment(QtCore.Qt.AlignCenter)
             layout.addWidget(image_label)
 
-        # Rich text label
+        # Rich text
         text_label = QtWidgets.QLabel()
         text_label.setTextFormat(QtCore.Qt.RichText)
         text_label.setOpenExternalLinks(True)
         text_label.setAlignment(QtCore.Qt.AlignLeft)
         text_label.setWordWrap(True)
-
         text_label.setText(
-            "<b>ICR2Edit v0.4</b><br><br>"
+            "<b>ICR2Edit v0.4.1</b><br><br>"
             "A physics parameter editor for IndyCar Racing II.<br>"
             "Supports DOS, Windows, and Rendition EXEs.<br><br>"
             "Created by SK Chow.<br><br>"
@@ -261,115 +304,108 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
         dialog.exec_()
 
-
-
-
-
     def update_category_list_styles(self):
+        """Italicize categories with unsaved changes."""
         for i in range(self.category_list.count()):
             item = self.category_list.item(i)
-            category = item.text()
             font = item.font()
-            font.setItalic(category in self.unsaved_changes)
+            font.setItalic(item.text() in self.unsaved_changes)
             item.setFont(font)
 
-
     def _create_widgets(self):
+        """Builds all menus and layout widgets."""
+        # Menubar setup
         open_action = QtWidgets.QAction("&Open .EXE File...\tCtrl+O", self)
         open_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_O)
         open_action.triggered.connect(self.open_exe)
+
         save_action = QtWidgets.QAction("&Save\tCtrl+S", self)
         save_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_S)
         save_action.triggered.connect(self.save_all)
+
+        revert_action = QtWidgets.QAction("&Revert\tCtrl+R", self)
+        revert_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_R)
+        revert_action.triggered.connect(self.revert_all_changes)
+
+
         exit_action = QtWidgets.QAction("E&xit", self)
         exit_action.triggered.connect(self.close)
-
-        menubar = self.menuBar()
-        file_menu = menubar.addMenu("&File")
-        file_menu.addAction(open_action)
-        file_menu.addAction(save_action)
-        file_menu.addSeparator()
-        file_menu.addAction(exit_action)
-
-        help_menu = self.menuBar().addMenu("&Help")
 
         about_action = QtWidgets.QAction("&About", self)
         about_action.triggered.connect(self.show_about)
 
+        file_menu = self.menuBar().addMenu("&File")
+        file_menu.addAction(open_action)
+        file_menu.addAction(save_action)
+        file_menu.addAction(revert_action)
+        file_menu.addSeparator()
+        file_menu.addAction(exit_action)
+
+
+        help_menu = self.menuBar().addMenu("&Help")
         help_menu.addAction(about_action)
 
-
+        # Main layout
         central_widget = QtWidgets.QWidget()
         self.setCentralWidget(central_widget)
         layout = QtWidgets.QHBoxLayout(central_widget)
 
+        # Category list
         self.category_list = QtWidgets.QListWidget()
         self.category_list.currentRowChanged.connect(self.on_category_select)
         layout.addWidget(self.category_list, 1)
 
+        # Parameter table
         self.param_table = QtWidgets.QTableWidget()
         self.param_table.setColumnCount(3)
         self.param_table.setHorizontalHeaderLabels(["Parameter", "Current value", "Default value"])
-
         header = self.param_table.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)        # Parameter column expands
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)  # Current value fits content
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)  # Default value fits content
-
-        self.param_table.doubleClicked.connect(self.on_double_click)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        #self.param_table.doubleClicked.connect(self.on_double_click)
         layout.addWidget(self.param_table, 3)
 
     def open_exe(self):
-
+        """Open EXE file and load associated parameters."""
         initial_dir = load_last_folder()
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            "Select ICR2 .EXE file",
-            initial_dir,
-            "Executables (*.exe)"
-        )
-
-
-
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select ICR2 .EXE file", initial_dir, "Executables (*.exe)")
         if not path:
             return
+
         version = identify_icr2_version(path)
         if not version:
             QtWidgets.QMessageBox.critical(self, "Error", "Unrecognized EXE version")
             return
-        csv_path = os.path.abspath("parameters.csv")
 
         try:
-            params_by_cat = load_parameters_by_category(csv_path)
+            params_by_cat = load_parameters_by_category("parameters.csv")
         except FileNotFoundError:
             QtWidgets.QMessageBox.critical(self, "Error", "parameters.csv not found")
             return
 
+        # Save state
         self.exe_path = path
-
         save_last_folder(os.path.dirname(path))
-
-
         self.version = version
         self.parameters_by_category = params_by_cat
         self.unsaved_changes.clear()
+
+        # UI update
         self.category_list.clear()
         self.category_list.addItems(self.parameters_by_category.keys())
         self.param_table.setRowCount(0)
         self.update_status()
         self.update_category_list_styles()
 
-
     def on_category_select(self, index):
+        """When user selects a category, populate the table with its parameters."""
         if self.exe_path is None or index < 0:
             return
         category = self.category_list.item(index).text()
         raw_params = self.parameters_by_category[category]
         valid_params = filter_parameters(raw_params, self.version)
-        if category in self.unsaved_changes:
-            current_vals = self.unsaved_changes[category][1]
-        else:
-            current_vals = load_initial_values(valid_params, self.exe_path, self.version)
+        current_vals = self.unsaved_changes.get(category, (None, None))[1] or load_initial_values(valid_params, self.exe_path, self.version)
         self.current_values = current_vals
         self.current_params = valid_params
         self.current_category = category
@@ -382,44 +418,78 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         for i, param in enumerate(self.current_params):
             desc = param["Description"]
             default = param["Default value"]
-            cur_val = self.current_values.get(i, "N/A")
-            orig_val = original_values.get(i, "N/A")
+            cur_val = self.current_values.get(i, 0)
+            orig_val = original_values.get(i, 0)
 
+            # Description column (not editable)
             item_desc = QtWidgets.QTableWidgetItem(desc)
-            item_cur = QtWidgets.QTableWidgetItem(str(cur_val))
-            item_def = QtWidgets.QTableWidgetItem(default)
-
-            # Highlight if changed in this session
-            if cur_val != orig_val:
-                item_cur.setBackground(QtCore.Qt.yellow)
-
+            item_desc.setFlags(QtCore.Qt.ItemIsEnabled)
             self.param_table.setItem(i, 0, item_desc)
-            self.param_table.setItem(i, 1, item_cur)
+
+            # SpinBox for current value
+            data_type = param.get("Data type", "").strip()
+            type_bounds = {
+                "UInt8": (0, 0xFF),
+                "UInt16": (0, 0xFFFF),
+                "UInt32": (0, 0xFFFFFFFF),
+            }
+            min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
+
+            spinbox = QtWidgets.QSpinBox()
+            spinbox.setMinimum(min_val)
+            spinbox.setMaximum(min(max_val, 2147483647))  # UI limit
+            spinbox.setValue(cur_val)
+            spinbox.setSingleStep(1)
+            spinbox.setAccelerated(True)
+
+            # Highlight if changed
+            if cur_val != orig_val:
+                spinbox.setStyleSheet("background-color: yellow;")
+
+            # Closure to capture index and update current values
+            def on_change(val, row=i):
+                sender = self.sender()
+                if isinstance(sender, QtWidgets.QSpinBox):
+                    sender.setStyleSheet("background-color: yellow;")
+                self.current_values[row] = val
+                self.unsaved_changes[self.current_category] = (
+                    self.current_params,
+                    self.current_values.copy(),
+                )
+                self.update_status()
+                self.update_category_list_styles()
+
+
+            spinbox.valueChanged.connect(on_change)
+            self.param_table.setCellWidget(i, 1, spinbox)
+
+            # Default value (read-only)
+            item_def = QtWidgets.QTableWidgetItem(default)
+            item_def.setFlags(QtCore.Qt.ItemIsEnabled)
             self.param_table.setItem(i, 2, item_def)
 
 
-
     def on_double_click(self, index):
+        """Edit the selected parameter with a slider/input dialog."""
         row = index.row()
         if row < 0:
             return
         param = self.current_params[row]
         cur_val = self.current_values.get(row, "N/A")
         data_type = param.get("Data type", "").strip()
-        type_bounds = {
-            "UInt8": (0, 0xFF),
-            "UInt16": (0, 0xFFFF),
-            "UInt32": (0, 0xFFFFFFFF),
-        }
+        type_bounds = {"UInt8": (0, 0xFF), "UInt16": (0, 0xFFFF), "UInt32": (0, 0xFFFFFFFF)}
         min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
 
         dlg = ParameterEditDialog(param["Description"], int(cur_val), min_val, max_val, self)
         if dlg.exec_() != QtWidgets.QDialog.Accepted:
             return
+
         new_val = dlg.value
         if not (min_val <= new_val <= max_val):
             QtWidgets.QMessageBox.critical(self, "Error", f"Value out of range for {data_type}")
             return
+
+        # Save value and mark as changed
         self.current_values[row] = new_val
         self.param_table.item(row, 1).setText(str(new_val))
         self.param_table.item(row, 1).setBackground(QtCore.Qt.yellow)
@@ -427,8 +497,8 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self.update_status()
         self.update_category_list_styles()
 
-
     def save_all(self):
+        """Save all modified values back to EXE."""
         if not self.unsaved_changes:
             QtWidgets.QMessageBox.information(self, "Info", "No changes to save")
             return
@@ -436,11 +506,11 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
             self.save_changes(params, values)
         self.unsaved_changes.clear()
         self.update_status()
-        QtWidgets.QMessageBox.information(self, "Info", "Changes saved")
         self.update_category_list_styles()
-
+        QtWidgets.QMessageBox.information(self, "Info", "Changes saved")
 
     def save_changes(self, params, values):
+        """Write parameter values to the EXE file."""
         address_key = ADDRESS_KEYS[self.version]
         for i, param in enumerate(params):
             if i not in values:
@@ -449,15 +519,14 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
             length = int(param["Length"]) if param["Length"].isdigit() else 4
             write_value_to_exe(self.exe_path, address, length, values[i])
 
+# ---- Application Entry Point ----
 
 def main():
     app = QtWidgets.QApplication([])
-    app.setWindowIcon(QIcon(resource_path("icon.ico"))
-)
+    app.setWindowIcon(QIcon(resource_path("icon.ico")))
     gui = PhysicsEditorGUI()
     gui.show()
     app.exec_()
-
 
 if __name__ == "__main__":
     main()
