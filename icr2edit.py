@@ -4,6 +4,8 @@ import os
 import struct
 import sys
 import json
+import subprocess
+from torque_graph import TorqueGraphApp
 
 # PyQt5 for GUI
 from PyQt5 import QtWidgets, QtCore
@@ -181,7 +183,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("ICR2Edit v0.4.1")
+        self.setWindowTitle("ICR2Edit v0.5.0")
         self.setWindowIcon(QIcon(resource_path("icon.ico")))
         self.resize(800, 600)
 
@@ -191,6 +193,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self.parameters_by_category = {}
         self.current_values = {}
         self.unsaved_changes = {}
+        self.checked_parameters = {}  # key = category name, value = set of checked row indices
 
         # GUI Setup
         self.status = self.statusBar()
@@ -198,15 +201,17 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self._create_widgets()
         self.show_about()
 
+
+
     def update_status(self):
         """Update window title and status bar based on EXE path and save state."""
         if not self.exe_path:
             self.status.showMessage("No EXE loaded")
-            self.setWindowTitle("ICR2Edit v0.4.1")
+            self.setWindowTitle("ICR2Edit v0.5.0")
             return
         changed = "modified" if self.unsaved_changes else "saved"
         base_name = os.path.basename(self.exe_path)
-        self.setWindowTitle(f"ICR2Edit v0.4.1 - {base_name} [{self.version}, {changed}]")
+        self.setWindowTitle(f"ICR2Edit v0.5.0 - {base_name} [{self.version}, {changed}]")
         self.status.clearMessage()
 
     def revert_all_changes(self):
@@ -286,8 +291,8 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         text_label.setAlignment(QtCore.Qt.AlignLeft)
         text_label.setWordWrap(True)
         text_label.setText(
-            "<b>ICR2Edit v0.4.1</b><br><br>"
-            "A physics parameter editor for IndyCar Racing II.<br>"
+            "<b>ICR2Edit v0.5.0</b><br><br>"
+            "A game parameter editor for IndyCar Racing II.<br>"
             "Supports DOS, Windows, and Rendition EXEs.<br><br>"
             "Created by SK Chow.<br><br>"
             "<a href='https://github.com/skchow03/icr2_physedit'>GitHub Repository</a><br>"
@@ -338,12 +343,29 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
         file_menu.addAction(revert_action)
+
+        import_values_action = QtWidgets.QAction("Import Parameter Values...", self)
+        import_values_action.triggered.connect(self.import_parameter_values)
+        file_menu.addAction(import_values_action)
+
+
+        export_selected_action = QtWidgets.QAction("Export Selected Parameters...", self)
+        export_selected_action.triggered.connect(self.export_selected_parameters)
+        file_menu.addAction(export_selected_action)
+
         file_menu.addSeparator()
         file_menu.addAction(exit_action)
 
+        tools_menu = self.menuBar().addMenu("&Tools")
+        # Torque graph launcher
+        torque_action = QtWidgets.QAction("Launch Torque Curve Visualizer", self)
+        torque_action.triggered.connect(self.launch_torque_visualizer)
+        tools_menu.addAction(torque_action)
 
         help_menu = self.menuBar().addMenu("&Help")
         help_menu.addAction(about_action)
+
+
 
         # Main layout
         central_widget = QtWidgets.QWidget()
@@ -357,14 +379,170 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
         # Parameter table
         self.param_table = QtWidgets.QTableWidget()
-        self.param_table.setColumnCount(3)
-        self.param_table.setHorizontalHeaderLabels(["Parameter", "Current value", "Default value"])
+        self.param_table.setColumnCount(4)
+        self.param_table.setHorizontalHeaderLabels(["✓", "Parameter", "Current value", "Default value"])
+
         header = self.param_table.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+
+        # Column 0: checkbox — minimal width
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+
+        # Column 1: parameter name — stretch to fill space
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+
+        # Column 2: current value — fixed or auto
         header.setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+
+        # Column 3: default value — fixed or auto
+        header.setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+
+
+
         #self.param_table.doubleClicked.connect(self.on_double_click)
         layout.addWidget(self.param_table, 3)
+
+        # Comment box (below table)
+        right_panel = QtWidgets.QVBoxLayout()
+        right_panel.addWidget(self.param_table, stretch=3)
+
+        self.comment_box = QtWidgets.QTextEdit()
+        self.comment_box.setReadOnly(True)
+        self.comment_box.setStyleSheet("background-color: #f0f0f0;")
+        self.comment_box.setPlaceholderText("Parameter comment will appear here.")
+        right_panel.addWidget(self.comment_box, stretch=1)
+
+        layout.addLayout(right_panel, 3)
+
+    def launch_torque_visualizer(self):
+        """Launch the torque graph in-process as a window."""
+        self.torque_window = TorqueGraphApp()
+        self.torque_window.show()
+
+
+
+    def import_parameter_values(self):
+        """Import parameter values from a CSV file and apply them in-memory across all categories (no EXE write)."""
+        if not self.parameters_by_category:
+            QtWidgets.QMessageBox.warning(self, "No Parameters", "No parameters loaded.")
+            return
+
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Import Parameter Values", "", "CSV Files (*.csv)"
+        )
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                imported = list(reader)
+        except Exception as e:
+            QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read file:\n{e}")
+            return
+
+        # Map import keys to values
+        imported_map = {}
+        for row in imported:
+            key = (
+                row.get("DOS address", "").strip().upper(),
+                row.get("Windy address", "").strip().upper(),
+                row.get("Rendition address", "").strip().upper(),
+                row.get("Length", "").strip(),
+            )
+            try:
+                value = int(row.get("Value", "").strip())
+                imported_map[key] = value
+            except ValueError:
+                continue
+
+        if not imported_map:
+            QtWidgets.QMessageBox.information(self, "Import", "No valid entries found in file.")
+            return
+
+        total_updated = 0
+
+        # Iterate through all categories and apply matches
+        for category, param_list in self.parameters_by_category.items():
+            valid_params = filter_parameters(param_list, self.version)
+            current_vals = load_initial_values(valid_params, self.exe_path, self.version)
+            changed_this_category = False
+
+            for i, param in enumerate(valid_params):
+                key = (
+                    param.get("DOS address", "").strip().upper(),
+                    param.get("Windy address", "").strip().upper(),
+                    param.get("Rendition address", "").strip().upper(),
+                    param.get("Length", "").strip(),
+                )
+                if key in imported_map:
+                    value = imported_map[key]
+                    current_vals[i] = value
+                    changed_this_category = True
+                    total_updated += 1
+
+                    # If this is the currently visible category, update UI
+                    if category == self.current_category:
+                        widget = self.param_table.cellWidget(i, 2)
+                        if isinstance(widget, QtWidgets.QSpinBox):
+                            widget.setValue(value)
+                            widget.setStyleSheet("background-color: yellow;")
+
+            if changed_this_category:
+                self.unsaved_changes[category] = (valid_params, current_vals.copy())
+                if category == self.current_category:
+                    self.current_values = current_vals
+
+        self.update_status()
+        self.update_category_list_styles()
+
+        if total_updated > 0:
+            QtWidgets.QMessageBox.information(self, "Import Complete", f"{total_updated} parameters updated.")
+        else:
+            QtWidgets.QMessageBox.information(self, "Import", "No matching parameters were found.")
+
+
+    def export_selected_parameters(self):
+        """Export all checked parameters (across all categories) to a CSV file."""
+        if not self.checked_parameters:
+            QtWidgets.QMessageBox.information(self, "No Selection", "No parameters were selected.")
+            return
+
+        save_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, "Export Selected Parameters", "", "CSV Files (*.csv)"
+        )
+        if not save_path:
+            return
+
+        fieldnames = ["DOS address", "Windy address", "Rendition address", "Length", "Value"]
+        with open(save_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+
+            total_written = 0
+
+            for category, selected_rows in self.checked_parameters.items():
+                if not selected_rows:
+                    continue
+                raw_params = self.parameters_by_category.get(category, [])
+                valid_params = filter_parameters(raw_params, self.version)
+                current_vals = self.unsaved_changes.get(category, (None, None))[1] or load_initial_values(valid_params, self.exe_path, self.version)
+
+                for i in selected_rows:
+                    if i >= len(valid_params):
+                        continue
+                    param = valid_params[i]
+                    value = current_vals.get(i, 0)
+                    writer.writerow({
+                        "DOS address": param.get("DOS address", "").strip(),
+                        "Windy address": param.get("Windy address", "").strip(),
+                        "Rendition address": param.get("Rendition address", "").strip(),
+                        "Length": param.get("Length", "").strip(),
+                        "Value": value,
+                    })
+                    total_written += 1
+
+        QtWidgets.QMessageBox.information(self, "Export Complete", f"{total_written} parameters exported.")
+
 
     def open_exe(self):
         """Open EXE file and load associated parameters."""
@@ -413,20 +591,29 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
     def populate_params(self):
         self.param_table.setRowCount(len(self.current_params))
+        checked_rows = self.checked_parameters.get(self.current_category, set())
+
         original_values = load_initial_values(self.current_params, self.exe_path, self.version)
 
         for i, param in enumerate(self.current_params):
             desc = param["Description"]
             default = param["Default value"]
             cur_val = self.current_values.get(i, 0)
-            orig_val = original_values.get(i, 0)
+            orig_val = load_initial_values(self.current_params, self.exe_path, self.version).get(i, 0)
 
-            # Description column (not editable)
+            # Checkbox column (col 0)
+            checkbox_item = QtWidgets.QTableWidgetItem()
+            checkbox_item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+            checkbox_item.setCheckState(QtCore.Qt.Checked if i in checked_rows else QtCore.Qt.Unchecked)
+            self.param_table.setItem(i, 0, checkbox_item)
+
+
+            # Description column (col 1)
             item_desc = QtWidgets.QTableWidgetItem(desc)
             item_desc.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.param_table.setItem(i, 0, item_desc)
+            self.param_table.setItem(i, 1, item_desc)
 
-            # SpinBox for current value
+            # SpinBox for current value (col 2)
             data_type = param.get("Data type", "").strip()
             type_bounds = {
                 "UInt8": (0, 0xFF),
@@ -437,16 +624,14 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
             spinbox = QtWidgets.QSpinBox()
             spinbox.setMinimum(min_val)
-            spinbox.setMaximum(min(max_val, 2147483647))  # UI limit
+            spinbox.setMaximum(min(max_val, 2147483647))
             spinbox.setValue(cur_val)
             spinbox.setSingleStep(1)
             spinbox.setAccelerated(True)
 
-            # Highlight if changed
             if cur_val != orig_val:
                 spinbox.setStyleSheet("background-color: yellow;")
 
-            # Closure to capture index and update current values
             def on_change(val, row=i):
                 sender = self.sender()
                 if isinstance(sender, QtWidgets.QSpinBox):
@@ -459,14 +644,44 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 self.update_status()
                 self.update_category_list_styles()
 
-
             spinbox.valueChanged.connect(on_change)
-            self.param_table.setCellWidget(i, 1, spinbox)
+            self.param_table.setCellWidget(i, 2, spinbox)
 
-            # Default value (read-only)
+            # Default value column (col 3)
             item_def = QtWidgets.QTableWidgetItem(default)
             item_def.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.param_table.setItem(i, 2, item_def)
+            self.param_table.setItem(i, 3, item_def)
+
+
+
+        self.param_table.setCurrentCell(0, 0)  # select first row by default
+        self.param_table.currentCellChanged.connect(self.on_param_select)
+        self.on_param_select(0, 0)  # trigger update to comment box
+
+        self.param_table.itemChanged.connect(self.on_checkbox_change)
+
+    def on_checkbox_change(self, item):
+        """Track changes to checkboxes and store them per category."""
+        if item.column() != 0:
+            return  # not a checkbox column
+
+        row = item.row()
+        checked = item.checkState() == QtCore.Qt.Checked
+        checked_set = self.checked_parameters.setdefault(self.current_category, set())
+
+        if checked:
+            checked_set.add(row)
+        else:
+            checked_set.discard(row)
+
+
+    def on_param_select(self, currentRow, currentCol):
+        """Update the comment box when a parameter is selected."""
+        if currentRow < 0 or currentRow >= len(self.current_params):
+            self.comment_box.clear()
+            return
+        comment = self.current_params[currentRow].get("Comments", "").strip()
+        self.comment_box.setPlainText(comment or "(No comment provided)")
 
 
     def on_double_click(self, index):

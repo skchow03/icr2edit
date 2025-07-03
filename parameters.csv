@@ -1,115 +1,122 @@
-DOS address,Windy address,Rendition address,Length,Data type,Default value,Category,Description
-F9CD8,DD320,115408,2,UInt16,6290,Engine parameters Ford,Fuel consumption rate
-F9CDC,DD324,11540C,2,UInt16,6500,Engine parameters Ford,RPM upshift point
-F9CE0,DD328,115410,2,UInt16,3900,Engine parameters Ford,RPM downshift point
-F9CE4,DD32C,115414,2,UInt16,1290,Engine parameters Ford,Torque RPM scale
-F9CE8,DD330,115418,2,UInt16,8675,Engine parameters Ford,Torque drop-off rate
-F9CEC,DD334,11541C,4,UInt32,0,Engine parameters Ford,Torque adjustment
-F9CF0,DD338,115420,2,UInt16,6500,Engine parameters Ford,RPM limit
-F9CF8,DD340,115428,2,UInt16,6282,Engine parameters Mercedes,Fuel consumption rate
-F9CFC,DD344,11542C,2,UInt16,6500,Engine parameters Mercedes,RPM upshift point
-F9D00,DD348,115430,2,UInt16,3900,Engine parameters Mercedes,RPM downshift point
-F9D04,DD34C,115434,2,UInt16,1236,Engine parameters Mercedes,Torque RPM scale
-F9D08,DD350,115438,2,UInt16,8308,Engine parameters Mercedes,Torque drop-off rate
-F9D0C,DD354,11543C,4,UInt32,2000000,Engine parameters Mercedes,Torque adjustment
-F9D10,DD358,115440,2,UInt16,6500,Engine parameters Mercedes,RPM limit
-F9D18,DD360,115448,2,UInt16,6282,Engine parameters Honda,Fuel consumption rate
-F9D1C,DD364,11544C,2,UInt16,6750,Engine parameters Honda,RPM upshift point
-F9D20,DD368,115450,2,UInt16,4100,Engine parameters Honda,RPM downshift point
-F9D24,DD36C,115454,2,UInt16,1180,Engine parameters Honda,Torque RPM scale
-F9D28,DD370,115458,2,UInt16,7637,Engine parameters Honda,Torque drop-off rate
-F9D2C,DD374,11545C,4,UInt32,1000000,Engine parameters Honda,Torque adjustment
-F9D30,DD378,115460,2,UInt16,6750,Engine parameters Honda,RPM limit
-F9D44,DD38C,115474,2,UInt16,7500,Chassis parameters Lola,Engine placement ??
-F9D48,DD390,115478,2,UInt16,33000,Chassis parameters Lola,Road course downforce
-F9D4C,DD394,11547C,2,UInt16,28000,Chassis parameters Lola,Speedway downforce
-F9D50,DD398,115480,2,UInt16,255,Chassis parameters Lola,Road course weight balance ??
-F9D54,DD39C,115484,2,UInt16,260,Chassis parameters Lola,Speedway weight balance ??
-F9D58,DD3A0,115488,2,UInt16,43691,Chassis parameters Lola,Chassis weight
-F9D5C,DD3A4,11548C,2,UInt16,7550,Chassis parameters Penske,Engine placement ??
-F9D60,DD3A8,115490,2,UInt16,33000,Chassis parameters Penske,Road course downforce
-F9D64,DD3AC,115494,2,UInt16,28000,Chassis parameters Penske,Speedway downforce
-F9D68,DD3B0,115498,2,UInt16,255,Chassis parameters Penske,Road course weight balance ??
-F9D6C,DD3B4,11549C,2,UInt16,260,Chassis parameters Penske,Speedway weight balance ??
-F9D70,DD3B8,1154A0,2,UInt16,43691,Chassis parameters Penske,Chassis weight
-F9D74,DD3BC,1154A4,2,UInt16,7550,Chassis parameters Reynard,Engine placement ??
-F9D78,DD3C0,1154A8,2,UInt16,33000,Chassis parameters Reynard,Road course downforce
-F9D7C,DD3C4,1154AC,2,UInt16,28000,Chassis parameters Reynard,Speedway downforce
-F9D80,DD3C8,1154B0,2,UInt16,255,Chassis parameters Reynard,Road course weight balance ??
-F9D84,DD3CC,1154B4,2,UInt16,260,Chassis parameters Reynard,Speedway weight balance ??
-F9D88,DD3D0,1154B8,2,UInt16,43691,Chassis parameters Reynard,Chassis weight
-,71CF5,,2,UInt16,5000,Other,Frozen lap time display
-,2C4A7,,4,UInt32,1800000,Other,Failure rate
-6DEF2,6D7BC,,2,UInt16,1000,Engine physics,Engine idle RPM
-6DF0A,6D7CB,,2,UInt16,1000,Engine physics,Engine idle RPM
-6DF30,6D7EA,,2,UInt16,250,Engine physics,RPM change rate
-6DF37,6D7F0,,2,UInt16,250,Engine physics,RPM change rate
-6DFB9,,,2,UInt16,17184,Engine physics,Torque multiplier
-6E002,6D8AF,,2,UInt16,6000,Engine physics,Boost related
-6E009,6D8C5,,2,UInt16,6000,Engine physics,Boost related
-,6D8CB,,2,UInt16,6000,Engine physics,Boost related
-6E00E,6D8CF,,2,UInt16,17929,Engine physics,Boost related
-6E4EE,6DE61,,2,UInt16,750,Engine physics,RPM limit adjustment
-,6A937,,2,UInt16,49151,Engine physics,Boost related
-700FD,6FA0E,,4,UInt32,9830400,Engine physics,Engine health ??
-FEFD4,DBE68,,1,UInt8,20,Points 1-12,Pos 1
-FEFD5,DBE69,,1,UInt8,16,Points 1-12,Pos 2
-FEFD6,DBE6A,,1,UInt8,14,Points 1-12,Pos 3
-FEFD7,DBE6B,,1,UInt8,12,Points 1-12,Pos 4
-FEFD8,DBE6C,,1,UInt8,10,Points 1-12,Pos 5
-FEFD9,DBE6D,,1,UInt8,8,Points 1-12,Pos 6
-FEFDA,DBE6E,,1,UInt8,6,Points 1-12,Pos 7
-FEFDB,DBE6F,,1,UInt8,5,Points 1-12,Pos 8
-FEFDC,DBE70,,1,UInt8,4,Points 1-12,Pos 9
-FEFDD,DBE71,,1,UInt8,3,Points 1-12,Pos 10
-FEFDE,DBE72,,1,UInt8,2,Points 1-12,Pos 11
-FEFDF,DBE73,,1,UInt8,1,Points 1-12,Pos 12
-FEFE0,DBE74,,1,UInt8,0,Points 13-33,Pos 13
-FEFE1,DBE75,,1,UInt8,0,Points 13-33,Pos 14
-FEFE2,DBE76,,1,UInt8,0,Points 13-33,Pos 15
-FEFE3,DBE77,,1,UInt8,0,Points 13-33,Pos 16
-FEFE4,DBE78,,1,UInt8,0,Points 13-33,Pos 17
-FEFE5,DBE79,,1,UInt8,0,Points 13-33,Pos 18
-FEFE6,DBE7A,,1,UInt8,0,Points 13-33,Pos 19
-FEFE7,DBE7B,,1,UInt8,0,Points 13-33,Pos 20
-FEFE8,DBE7C,,1,UInt8,0,Points 13-33,Pos 21
-FEFE9,DBE7D,,1,UInt8,0,Points 13-33,Pos 22
-FEFEA,DBE7E,,1,UInt8,0,Points 13-33,Pos 23
-FEFEB,DBE7F,,1,UInt8,0,Points 13-33,Pos 24
-FEFEC,DBE80,,1,UInt8,0,Points 13-33,Pos 25
-FEFED,DBE81,,1,UInt8,0,Points 13-33,Pos 26
-FEFEE,DBE82,,1,UInt8,0,Points 13-33,Pos 27
-FEFEF,DBE83,,1,UInt8,0,Points 13-33,Pos 28
-FEFF0,DBE84,,1,UInt8,0,Points 13-33,Pos 29
-FEFF1,DBE85,,1,UInt8,0,Points 13-33,Pos 30
-FEFF2,DBE86,,1,UInt8,0,Points 13-33,Pos 31
-FEFF3,DBE87,,1,UInt8,0,Points 13-33,Pos 32
-FEFF4,DBE88,,1,UInt8,0,Points 13-33,Pos 33
-FEFF5,DBE89,,1,UInt8,0,Points 34-40,Pos 34
-FEFF6,DBE8A,,1,UInt8,0,Points 34-40,Pos 35
-FEFF7,DBE8B,,1,UInt8,0,Points 34-40,Pos 36
-FEFF8,DBE8C,,1,UInt8,0,Points 34-40,Pos 37
-FEFF9,DBE8D,,1,UInt8,0,Points 34-40,Pos 38
-FEFFA,DBE8E,,1,UInt8,0,Points 34-40,Pos 39
-FEFFB,DBE8F,,1,UInt8,0,Points 34-40,Pos 40
-F9CC4,DD30C,,4,UInt32,75890688,Tire life,RF
-F9CC8,DD310,,4,UInt32,75890688,Tire life,RR
-F9CCC,DD314,,4,UInt32,75890688,Tire life,LR
-F9CD0,DD318,,4,UInt32,75890688,Tire life,LF
-F9CB4,DD2FC,,2,UInt16,261,Tire unknown,RF
-F9CB8,DD300,,2,UInt16,261,Tire unknown,RR
-F9CBC,DD304,,2,UInt16,261,Tire unknown,LR
-F9CC0,DD308,,2,UInt16,261,Tire unknown,LF
-F9C6C,DD2B4,,2,UInt16,57344,Brake bias,Value 1
-F9C70,DD2B8,,2,UInt16,50322,Brake bias,Value 2
-F9C74,DD2BC,,2,UInt16,43300,Brake bias,Value 3
-F9C78,DD2C0,,2,UInt16,36279,Brake bias,Value 4
-F9C7C,DD2C4,,2,UInt16,29257,Brake bias,Value 5
-F9C80,DD2C8,,2,UInt16,22235,Brake bias,Value 6
-F9C84,DD2CC,,2,UInt16,15214,Brake bias,Value 7
-F9C88,DD2D0,,2,UInt16,8192,Brake bias,Value 8
-F9C8C,DD2D4,,2,UInt16,27428,Brake bias,Default front brake ??
-F9C90,DD2D8,,2,UInt16,29916,Brake bias,Default rear brake ??
-F9C94,DD2DC,,1,UInt8,9,Other,Default boost knob
-BC726,C3296,,1,UInt8,31,Other,Max opponents
-BC72A,C329A,,1,UInt8,31,Other,Max opponents
+DOS address,Windy address,Rendition address,Length,Data type,Default value,Category,Description,Comments
+F9CD8,DD320,115408,2,UInt16,6290,Engine parameters Ford,Fuel consumption rate,Lower = less fuel used 
+F9CDC,DD324,11540C,2,UInt16,6500,Engine parameters Ford,RPM upshift point,Used for autoshift/red light (multiply value here by 2)
+F9CE0,DD328,115410,2,UInt16,3900,Engine parameters Ford,RPM downshift point,Used for autoshift/red light (multiply value here by 2)
+F9CE4,DD32C,115414,2,UInt16,1290,Engine parameters Ford,Torque coefficient 1,Affects how curve rises to peak (use Torque Curve Visualizer)
+F9CE8,DD330,115418,2,UInt16,8675,Engine parameters Ford,Torque coefficient 2,Affects how curve drops from peak (use Torque Curve Visualizer)
+F9CEC,DD334,11541C,4,UInt32,0,Engine parameters Ford,Torque adjustment,Overall adjustment factor (increases entire torque curve)
+F9CF0,DD338,115420,2,UInt16,6500,Engine parameters Ford,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
+F9CF8,DD340,115428,2,UInt16,6282,Engine parameters Mercedes,Fuel consumption rate,Lower = less fuel used 
+F9CFC,DD344,11542C,2,UInt16,6500,Engine parameters Mercedes,RPM upshift point,Used for autoshift/red light (multiply value here by 2)
+F9D00,DD348,115430,2,UInt16,3900,Engine parameters Mercedes,RPM downshift point,Used for autoshift/red light (multiply value here by 2)
+F9D04,DD34C,115434,2,UInt16,1236,Engine parameters Mercedes,Torque coefficient 1,Affects how curve rises to peak (use Torque Curve Visualizer)
+F9D08,DD350,115438,2,UInt16,8308,Engine parameters Mercedes,Torque coefficient 2,Affects how curve drops from peak (use Torque Curve Visualizer)
+F9D0C,DD354,11543C,4,UInt32,2000000,Engine parameters Mercedes,Torque adjustment,Overall adjustment factor (increases entire torque curve)
+F9D10,DD358,115440,2,UInt16,6500,Engine parameters Mercedes,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
+F9D18,DD360,115448,2,UInt16,6282,Engine parameters Honda,Fuel consumption rate,Lower = less fuel used 
+F9D1C,DD364,11544C,2,UInt16,6750,Engine parameters Honda,RPM upshift point,Used for autoshift/red light (multiply value here by 2)
+F9D20,DD368,115450,2,UInt16,4100,Engine parameters Honda,RPM downshift point,Used for autoshift/red light (multiply value here by 2)
+F9D24,DD36C,115454,2,UInt16,1180,Engine parameters Honda,Torque coefficient 1,Affects how curve rises to peak (use Torque Curve Visualizer)
+F9D28,DD370,115458,2,UInt16,7637,Engine parameters Honda,Torque coefficient 2,Affects how curve drops from peak (use Torque Curve Visualizer)
+F9D2C,DD374,11545C,4,UInt32,1000000,Engine parameters Honda,Torque adjustment,Overall adjustment factor (increases entire torque curve)
+F9D30,DD378,115460,2,UInt16,6750,Engine parameters Honda,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
+F9D44,DD38C,115474,2,UInt16,7500,Chassis parameters Lola,Engine placement ??,"Lower value - engine moved closer to chassis center (front), rear of the car is stable. Higher value - engine moved to the rear, more oversteer, hard to control rear of the car."
+F9D48,DD390,115478,2,UInt16,33000,Chassis parameters Lola,Road course downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
+F9D4C,DD394,11547C,2,UInt16,28000,Chassis parameters Lola,Speedway downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
+F9D50,DD398,115480,2,UInt16,255,Chassis parameters Lola,Road course weight balance ??,"It's roadcourse chassis weight (or maybe downforce) balance. Lower value = more front weight (?more rear downforce), stable car. Higher value = more rear weight (?less rear downforce), oversteer."
+F9D54,DD39C,115484,2,UInt16,260,Chassis parameters Lola,Speedway weight balance ??,"It's speedway chassis weight (or maybe downforce) balance. Lower value = more front weight (?more rear downforce), stable car.
+Higher value = more rear weight (?less rear downforce), oversteer."
+F9D58,DD3A0,115488,2,UInt16,43691,Chassis parameters Lola,Chassis weight,"Higher value = more weight, car heavy as tank. Lower value - light car, hard to control on high speeds."
+F9D5C,DD3A4,11548C,2,UInt16,7550,Chassis parameters Penske,Engine placement ??,"Lower value - engine moved closer to chassis center (front), rear of the car is stable. Higher value - engine moved to the rear, more oversteer, hard to control rear of the car."
+F9D60,DD3A8,115490,2,UInt16,33000,Chassis parameters Penske,Road course downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
+F9D64,DD3AC,115494,2,UInt16,28000,Chassis parameters Penske,Speedway downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
+F9D68,DD3B0,115498,2,UInt16,255,Chassis parameters Penske,Road course weight balance ??,"It's roadcourse chassis weight (or maybe downforce) balance. Lower value = more front weight (?more rear downforce), stable car. Higher value = more rear weight (?less rear downforce), oversteer."
+F9D6C,DD3B4,11549C,2,UInt16,260,Chassis parameters Penske,Speedway weight balance ??,"It's speedway chassis weight (or maybe downforce) balance. Lower value = more front weight (?more rear downforce), stable car.
+Higher value = more rear weight (?less rear downforce), oversteer."
+F9D70,DD3B8,1154A0,2,UInt16,43691,Chassis parameters Penske,Chassis weight,"Higher value = more weight, car heavy as tank. Lower value - light car, hard to control on high speeds."
+F9D74,DD3BC,1154A4,2,UInt16,7550,Chassis parameters Reynard,Engine placement ??,"Lower value - engine moved closer to chassis center (front), rear of the car is stable. Higher value - engine moved to the rear, more oversteer, hard to control rear of the car."
+F9D78,DD3C0,1154A8,2,UInt16,33000,Chassis parameters Reynard,Road course downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
+F9D7C,DD3C4,1154AC,2,UInt16,28000,Chassis parameters Reynard,Speedway downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
+F9D80,DD3C8,1154B0,2,UInt16,255,Chassis parameters Reynard,Road course weight balance ??,"It's roadcourse chassis weight (or maybe downforce) balance. Lower value = more front weight (?more rear downforce), stable car. Higher value = more rear weight (?less rear downforce), oversteer."
+F9D84,DD3CC,1154B4,2,UInt16,260,Chassis parameters Reynard,Speedway weight balance ??,"It's speedway chassis weight (or maybe downforce) balance. Lower value = more front weight (?more rear downforce), stable car.
+Higher value = more rear weight (?less rear downforce), oversteer."
+F9D88,DD3D0,1154B8,2,UInt16,43691,Chassis parameters Reynard,Chassis weight,"Higher value = more weight, car heavy as tank. Lower value - light car, hard to control on high speeds."
+,71CF5,,2,UInt16,5000,Other,Frozen lap time display,"At the completion of a lap, the lap time is shown for this duration"
+,2C4A7,,4,UInt32,1800000,Other,Failure rate,
+6DEF2,6D7BC,,2,UInt16,1000,Engine physics,Engine idle RPM,Multiply the value here by 2 to get the idle RPM in game
+6DF0A,6D7CB,,2,UInt16,1000,Engine physics,Engine idle RPM,Multiply the value here by 2 to get the idle RPM in game
+6DF30,6D7EA,,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
+6DF37,6D7F0,,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
+6DFB9,,,2,UInt16,17184,Engine physics,Torque multiplier,Lower value = lower power
+6E002,6D8AF,,2,UInt16,6000,Engine physics,Boost related,Unknown effect
+6E009,6D8C5,,2,UInt16,6000,Engine physics,Boost related,Unknown effect
+,6D8CB,,2,UInt16,6000,Engine physics,Boost related,Unknown effect
+6E00E,6D8CF,,2,UInt16,17929,Engine physics,Boost related,Unknown effect
+6E4EE,6DE61,,2,UInt16,750,Engine physics,RPM limit adjustment,Higher value = higher RPM limit before engine blowing
+,6A937,,2,UInt16,49151,Engine physics,Boost related,Base power when boost 1
+6E0CA,,,2,UInt16,20000,Engine physics,Boost related,Unknown effect
+700FD,6FA0E,,4,UInt32,9830400,Engine physics,Engine health ??,
+FEFD4,DBE68,,1,UInt8,20,Points 1-12,Pos 1,
+FEFD5,DBE69,,1,UInt8,16,Points 1-12,Pos 2,
+FEFD6,DBE6A,,1,UInt8,14,Points 1-12,Pos 3,
+FEFD7,DBE6B,,1,UInt8,12,Points 1-12,Pos 4,
+FEFD8,DBE6C,,1,UInt8,10,Points 1-12,Pos 5,
+FEFD9,DBE6D,,1,UInt8,8,Points 1-12,Pos 6,
+FEFDA,DBE6E,,1,UInt8,6,Points 1-12,Pos 7,
+FEFDB,DBE6F,,1,UInt8,5,Points 1-12,Pos 8,
+FEFDC,DBE70,,1,UInt8,4,Points 1-12,Pos 9,
+FEFDD,DBE71,,1,UInt8,3,Points 1-12,Pos 10,
+FEFDE,DBE72,,1,UInt8,2,Points 1-12,Pos 11,
+FEFDF,DBE73,,1,UInt8,1,Points 1-12,Pos 12,
+FEFE0,DBE74,,1,UInt8,0,Points 13-33,Pos 13,
+FEFE1,DBE75,,1,UInt8,0,Points 13-33,Pos 14,
+FEFE2,DBE76,,1,UInt8,0,Points 13-33,Pos 15,
+FEFE3,DBE77,,1,UInt8,0,Points 13-33,Pos 16,
+FEFE4,DBE78,,1,UInt8,0,Points 13-33,Pos 17,
+FEFE5,DBE79,,1,UInt8,0,Points 13-33,Pos 18,
+FEFE6,DBE7A,,1,UInt8,0,Points 13-33,Pos 19,
+FEFE7,DBE7B,,1,UInt8,0,Points 13-33,Pos 20,
+FEFE8,DBE7C,,1,UInt8,0,Points 13-33,Pos 21,
+FEFE9,DBE7D,,1,UInt8,0,Points 13-33,Pos 22,
+FEFEA,DBE7E,,1,UInt8,0,Points 13-33,Pos 23,
+FEFEB,DBE7F,,1,UInt8,0,Points 13-33,Pos 24,
+FEFEC,DBE80,,1,UInt8,0,Points 13-33,Pos 25,
+FEFED,DBE81,,1,UInt8,0,Points 13-33,Pos 26,
+FEFEE,DBE82,,1,UInt8,0,Points 13-33,Pos 27,
+FEFEF,DBE83,,1,UInt8,0,Points 13-33,Pos 28,
+FEFF0,DBE84,,1,UInt8,0,Points 13-33,Pos 29,
+FEFF1,DBE85,,1,UInt8,0,Points 13-33,Pos 30,
+FEFF2,DBE86,,1,UInt8,0,Points 13-33,Pos 31,
+FEFF3,DBE87,,1,UInt8,0,Points 13-33,Pos 32,
+FEFF4,DBE88,,1,UInt8,0,Points 13-33,Pos 33,
+FEFF5,DBE89,,1,UInt8,0,Points 34-40,Pos 34,
+FEFF6,DBE8A,,1,UInt8,0,Points 34-40,Pos 35,
+FEFF7,DBE8B,,1,UInt8,0,Points 34-40,Pos 36,
+FEFF8,DBE8C,,1,UInt8,0,Points 34-40,Pos 37,
+FEFF9,DBE8D,,1,UInt8,0,Points 34-40,Pos 38,
+FEFFA,DBE8E,,1,UInt8,0,Points 34-40,Pos 39,
+FEFFB,DBE8F,,1,UInt8,0,Points 34-40,Pos 40,
+F9CC4,DD30C,,4,UInt32,75890688,Tire life,RF,lower value tyre will wear quckly
+F9CC8,DD310,,4,UInt32,75890688,Tire life,RR,lower value tyre will wear quckly
+F9CCC,DD314,,4,UInt32,75890688,Tire life,LR,lower value tyre will wear quckly
+F9CD0,DD318,,4,UInt32,75890688,Tire life,LF,lower value tyre will wear quckly
+F9CB4,DD2FC,,2,UInt16,261,Tire unknown,RF,
+F9CB8,DD300,,2,UInt16,261,Tire unknown,RR,
+F9CBC,DD304,,2,UInt16,261,Tire unknown,LR,
+F9CC0,DD308,,2,UInt16,261,Tire unknown,LF,
+F9C6C,DD2B4,,2,UInt16,57344,Brake bias,Value 1,
+F9C70,DD2B8,,2,UInt16,50322,Brake bias,Value 2,
+F9C74,DD2BC,,2,UInt16,43300,Brake bias,Value 3,
+F9C78,DD2C0,,2,UInt16,36279,Brake bias,Value 4,
+F9C7C,DD2C4,,2,UInt16,29257,Brake bias,Value 5,
+F9C80,DD2C8,,2,UInt16,22235,Brake bias,Value 6,
+F9C84,DD2CC,,2,UInt16,15214,Brake bias,Value 7,
+F9C88,DD2D0,,2,UInt16,8192,Brake bias,Value 8,
+F9C8C,DD2D4,,2,UInt16,27428,Brake bias,Default front brake ??,
+F9C90,DD2D8,,2,UInt16,29916,Brake bias,Default rear brake ??,
+F9C94,DD2DC,,1,UInt8,9,Other,Default boost knob,
+BC726,,C3296,1,UInt8,31,Other,Max opponents,
+BC72A,,C329A,1,UInt8,31,Other,Max opponents,
+6B305,,,2,UInt16,17929,Other,Boost display calc [A],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
+6B30A,,,2,UInt16,1616,Other,Boost display calc [B],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
+6B317,,,1,UInt8,29,Other,Boost display calc [C],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
