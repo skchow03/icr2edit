@@ -48,8 +48,8 @@ F9D88,DD3D0,1154B8,2,UInt16,43691,Chassis parameters Reynard,Chassis weight,"Hig
 6DF30,6D7EA,,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
 6DF37,6D7F0,,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
 6DFB9,,,2,UInt16,17184,Engine physics,Torque multiplier,Lower value = lower power
-6E002,6D8AF,,2,UInt16,6000,Engine physics,Boost related,Unknown effect
-6E009,6D8C5,,2,UInt16,6000,Engine physics,Boost related,Unknown effect
+6E002,6D8AF,,2,UInt16,6000,Engine physics,Torque cap,Increasing this makes car unstable at low speed (like having wheelspin). Default value may have a purpose like traction control.
+6E009,6D8C5,,2,UInt16,6000,Engine physics,Torque cap,Increasing this makes car unstable at low speed (like having wheelspin). Default value may have a purpose like traction control.
 ,6D8CB,,2,UInt16,6000,Engine physics,Boost related,Unknown effect
 6E00E,6D8CF,,2,UInt16,17929,Engine physics,Boost related,Unknown effect
 6E4EE,6DE61,,2,UInt16,750,Engine physics,RPM limit adjustment,Higher value = higher RPM limit before engine blowing
@@ -120,3 +120,26 @@ BC72A,,C329A,1,UInt8,31,Other,Max opponents,
 6B305,,,2,UInt16,17929,Other,Boost display calc [A],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
 6B30A,,,2,UInt16,1616,Other,Boost display calc [B],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
 6B317,,,1,UInt8,29,Other,Boost display calc [C],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
+6B226,,,2,UInt16,1190,Engine physics,Boost high value?,
+6B22D,,,2,UInt16,1190,Engine physics,Boost high value?,
+6B233,,,2,UInt16,250,Engine physics,Boost low value?,
+6B23A,,,2,UInt16,250,Engine physics,Boost low value?,
+F9C08,,,2,UInt16,52089,Engine physics,Boost table,
+F9C0A,,,2,UInt16,33396,Engine physics,Boost table,
+F9C0C,,,2,UInt16,22847,Engine physics,Boost table,
+F9C0E,,,2,UInt16,22410,Engine physics,Boost table,
+F9C10,,,2,UInt16,22410,Engine physics,Boost table,
+F9C12,,,2,UInt16,22410,Engine physics,Boost table,
+8BB64,,,2,UInt16,1000,Engine physics,Boost value low clamp,
+8BB6B,,,2,UInt16,1000,Engine physics,Boost value low clamp,
+8BB71,,,2,UInt16,10000,Engine physics,Boost value high clamp,
+8BB78,,,2,UInt16,10000,Engine physics,Boost value high clamp,
+FD25C,,,4,UInt32,256,Engine specific ?,Output scalar ?,Possibly a different value for each of 3 engines
+FD260,,,4,UInt32,252,Engine specific ?,Output scalar ?,Possibly a different value for each of 3 engines
+FD264,,,4,UInt32,240,Engine specific ?,Output scalar ?,Possibly a different value for each of 3 engines
+FD268,,,4,UInt32,6250,Engine specific ?,Torque limit ?,Possibly a different value for each of 3 engines
+FD26C,,,4,UInt32,6400,Engine specific ?,Torque limit ?,Possibly a different value for each of 3 engines
+FD270,,,4,UInt32,6750,Engine specific ?,Torque limit ?,Possibly a different value for each of 3 engines
+FD274,,,4,UInt32,3750,Engine specific ?,Fallback min ?,Possibly a different value for each of 3 engines
+FD278,,,4,UInt32,3900,Engine specific ?,Fallback min ?,Possibly a different value for each of 3 engines
+FD27C,,,4,UInt32,3900,Engine specific ?,Fallback min ?,Possibly a different value for each of 3 engines
