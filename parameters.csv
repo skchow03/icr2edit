@@ -6,14 +6,14 @@ F9CE4,DD32C,115414,2,UInt16,1290,Engine parameters Ford,Torque coefficient 1,Aff
 F9CE8,DD330,115418,2,UInt16,8675,Engine parameters Ford,Torque coefficient 2,Affects how curve drops from peak (use Torque Curve Visualizer)
 F9CEC,DD334,11541C,4,UInt32,0,Engine parameters Ford,Torque adjustment,Overall adjustment factor (increases entire torque curve)
 F9CF0,DD338,115420,2,UInt16,6500,Engine parameters Ford,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
-F9CF8,DD340,115428,2,UInt16,6282,Engine parameters Mercedes,Fuel consumption rate,Lower = less fuel used 
+F9CF8,DD340,115428,2,UInt16,6290,Engine parameters Mercedes,Fuel consumption rate,Lower = less fuel used 
 F9CFC,DD344,11542C,2,UInt16,6500,Engine parameters Mercedes,RPM upshift point,Used for autoshift/red light (multiply value here by 2)
 F9D00,DD348,115430,2,UInt16,3900,Engine parameters Mercedes,RPM downshift point,Used for autoshift/red light (multiply value here by 2)
 F9D04,DD34C,115434,2,UInt16,1236,Engine parameters Mercedes,Torque coefficient 1,Affects how curve rises to peak (use Torque Curve Visualizer)
 F9D08,DD350,115438,2,UInt16,8308,Engine parameters Mercedes,Torque coefficient 2,Affects how curve drops from peak (use Torque Curve Visualizer)
 F9D0C,DD354,11543C,4,UInt32,2000000,Engine parameters Mercedes,Torque adjustment,Overall adjustment factor (increases entire torque curve)
 F9D10,DD358,115440,2,UInt16,6500,Engine parameters Mercedes,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
-F9D18,DD360,115448,2,UInt16,6282,Engine parameters Honda,Fuel consumption rate,Lower = less fuel used 
+F9D18,DD360,115448,2,UInt16,6290,Engine parameters Honda,Fuel consumption rate,Lower = less fuel used 
 F9D1C,DD364,11544C,2,UInt16,6750,Engine parameters Honda,RPM upshift point,Used for autoshift/red light (multiply value here by 2)
 F9D20,DD368,115450,2,UInt16,4100,Engine parameters Honda,RPM downshift point,Used for autoshift/red light (multiply value here by 2)
 F9D24,DD36C,115454,2,UInt16,1180,Engine parameters Honda,Torque coefficient 1,Affects how curve rises to peak (use Torque Curve Visualizer)
@@ -42,14 +42,14 @@ F9D84,DD3CC,1154B4,2,UInt16,260,Chassis parameters Reynard,Speedway weight balan
 Higher value = more rear weight (?less rear downforce), oversteer."
 F9D88,DD3D0,1154B8,2,UInt16,43691,Chassis parameters Reynard,Chassis weight,"Higher value = more weight, car heavy as tank. Lower value - light car, hard to control on high speeds."
 ,71CF5,,2,UInt16,5000,Other,Frozen lap time display,"At the completion of a lap, the lap time is shown for this duration"
-,2C4A7,,4,UInt32,1800000,Other,Failure rate,
-6DEF2,6D7BC,,2,UInt16,1000,Engine physics,Engine idle RPM,Multiply the value here by 2 to get the idle RPM in game
-6DF0A,6D7CB,,2,UInt16,1000,Engine physics,Engine idle RPM,Multiply the value here by 2 to get the idle RPM in game
-6DF30,6D7EA,,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
-6DF37,6D7F0,,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
-6DFB9,,,2,UInt16,17184,Engine physics,Torque multiplier,Lower value = lower power
-6E002,6D8AF,,2,UInt16,6000,Engine physics,Torque cap,Increasing this makes car unstable at low speed (like having wheelspin). Default value may have a purpose like traction control.
-6E009,6D8C5,,2,UInt16,6000,Engine physics,Torque cap,Increasing this makes car unstable at low speed (like having wheelspin). Default value may have a purpose like traction control.
+80753,2C4A7,994BD,4,UInt32,1800000,Other,Failure rate,"This code determines the break rate of the player and the AIs. Lower the value and the breaks and crashes will become more frequent. Probability is 101 / <failure rate>, for example 101 / 1800000 = 0.561% per check."
+6DEF2,6D7BC,8C145,2,UInt16,1000,Engine physics,Engine idle RPM,Multiply the value here by 2 to get the idle RPM in game
+6DF0A,6D7CB,8C153,2,UInt16,1000,Engine physics,Engine idle RPM,Multiply the value here by 2 to get the idle RPM in game
+6DF30,6D7EA,8C174,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
+6DF37,6D7F0,8C179,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
+6DFB9,,8C1FB,2,UInt16,17184,Engine physics,Torque multiplier,Lower value = lower power
+6E002,6D8AF,8C240,2,UInt16,6000,Engine physics,Torque cap,Increasing this makes car unstable at low speed (like having wheelspin). Default value may have a purpose like traction control.
+6E009,6D8C5,8C245,2,UInt16,6000,Engine physics,Torque cap,Increasing this makes car unstable at low speed (like having wheelspin). Default value may have a purpose like traction control.
 ,6D8CB,,2,UInt16,6000,Engine physics,Boost related,Unknown effect
 6E00E,6D8CF,,2,UInt16,17929,Engine physics,Boost related,Unknown effect
 6E4EE,6DE61,,2,UInt16,750,Engine physics,RPM limit adjustment,Higher value = higher RPM limit before engine blowing
