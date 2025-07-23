@@ -6,6 +6,7 @@ A command-line tool for viewing and editing engine, chassis and other parameters
 
 # Version history
 
+- v0.5.1 - July 22, 2025: Added support for DOS32A Rendition version
 - v0.4 - July 1, 2025: Added GUI, general improvements
 - v0.3 - June 1, 2025: redid the interface and added more parameters to edit
 - v0.31 - June 3, 2025: added validation check when inputting new values
@@ -40,13 +41,6 @@ Or:
 ---
 
 ## EXE Compatibility
-
-Version       | File Name     | Detected As
-------------- | ------------- | ------------
-Windows 1.0.1 | WINDY.EXE     | windy101
-DOS 1.0.0     | INDYCAR.EXE   | dos100
-DOS 1.0.2     | INDYCAR.EXE   | dos102
-Rendition     | CART.EXE      | rend102
 
 The editor determines version by file size and uses version-specific hardcoded offsets.
 
