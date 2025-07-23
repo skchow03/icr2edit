@@ -19,6 +19,7 @@ EXE_VERSIONS = {
     1142387: "dos102",
     1247899: "rend102",
     1916928: "windy101",
+    1109095: "rend32A"
 }
 
 # Maps ICR2 version names to the CSV address field to use
@@ -27,6 +28,7 @@ ADDRESS_KEYS = {
     "dos102": "DOS address",
     "windy101": "Windy address",
     "rend102": "Rendition address",
+    "rend32A": "Rendition DOS32A",
 }
 
 # JSON file to store last opened folder path
@@ -183,7 +185,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("ICR2Edit v0.5.0")
+        self.setWindowTitle("ICR2Edit v0.5.1")
         self.setWindowIcon(QIcon(resource_path("icon.ico")))
         self.resize(800, 600)
 
@@ -207,11 +209,11 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         """Update window title and status bar based on EXE path and save state."""
         if not self.exe_path:
             self.status.showMessage("No EXE loaded")
-            self.setWindowTitle("ICR2Edit v0.5.0")
+            self.setWindowTitle("ICR2Edit v0.5.1")
             return
         changed = "modified" if self.unsaved_changes else "saved"
         base_name = os.path.basename(self.exe_path)
-        self.setWindowTitle(f"ICR2Edit v0.5.0 - {base_name} [{self.version}, {changed}]")
+        self.setWindowTitle(f"ICR2Edit v0.5.1 - {base_name} [{self.version}, {changed}]")
         self.status.clearMessage()
 
     def revert_all_changes(self):
@@ -291,7 +293,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         text_label.setAlignment(QtCore.Qt.AlignLeft)
         text_label.setWordWrap(True)
         text_label.setText(
-            "<b>ICR2Edit v0.5.0</b><br><br>"
+            "<b>ICR2Edit v0.5.1</b><br><br>"
             "A game parameter editor for IndyCar Racing II.<br>"
             "Supports DOS, Windows, and Rendition EXEs.<br><br>"
             "Created by SK Chow.<br><br>"
