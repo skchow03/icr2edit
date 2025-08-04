@@ -1,6 +1,6 @@
 # ICR2Edit
 
-A command-line tool for viewing and editing engine, chassis and other parameters in IndyCar Racing II (WINDY.EXE, INDYCAR.EXE, or CART.EXE). Built for modding the Windows and DOS versions of ICR2 with a modern Windows interface.
+A tool for viewing and editing engine, chassis and other parameters in IndyCar Racing II (WINDY.EXE, INDYCAR.EXE, or CART.EXE). Built for modding the Windows and DOS versions of ICR2 with a modern Windows interface.
 
 ---
 
