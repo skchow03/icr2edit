@@ -78,8 +78,8 @@ def load_parameters_by_category(file_path):
             parameters_by_category.setdefault(category, []).append(row)
     return parameters_by_category
 
-def read_value_from_exe(exe_path, address_hex, length):
-    """Read a typed value of `length` bytes from the EXE at hex offset."""
+def read_value_from_exe(exe_path, address_hex, length, data_type=""):
+    """Read a typed value of `length` bytes from the EXE at hex offset, optionally signed."""
     try:
         offset = int(address_hex, 16)
     except (ValueError, TypeError):
@@ -90,15 +90,15 @@ def read_value_from_exe(exe_path, address_hex, length):
         if len(data) != length:
             return None
         if length == 1:
-            return struct.unpack("<B", data)[0]
+            return struct.unpack("<b", data)[0] if data_type == "Int8" else struct.unpack("<B", data)[0]
         if length == 2:
-            return struct.unpack("<H", data)[0]
+            return struct.unpack("<h", data)[0] if data_type == "Int16" else struct.unpack("<H", data)[0]
         if length == 4:
-            return struct.unpack("<I", data)[0]
-        return int.from_bytes(data, "little")  # fallback
+            return struct.unpack("<i", data)[0] if data_type == "Int32" else struct.unpack("<I", data)[0]
+        return int.from_bytes(data, "little", signed=("Int" in data_type))
 
-def write_value_to_exe(exe_path, address_hex, length, value):
-    """Write a typed value of `length` bytes to the EXE at hex offset."""
+def write_value_to_exe(exe_path, address_hex, length, value, data_type=""):
+    """Write a typed value of `length` bytes to the EXE at hex offset, optionally signed."""
     try:
         offset = int(address_hex, 16)
     except (ValueError, TypeError):
@@ -106,13 +106,16 @@ def write_value_to_exe(exe_path, address_hex, length, value):
     with open(exe_path, "rb+") as f:
         f.seek(offset)
         if length == 1:
-            f.write(struct.pack("<B", value))
+            fmt = "<b" if data_type == "Int8" else "<B"
+            f.write(struct.pack(fmt, value))
         elif length == 2:
-            f.write(struct.pack("<H", value))
+            fmt = "<h" if data_type == "Int16" else "<H"
+            f.write(struct.pack(fmt, value))
         elif length == 4:
-            f.write(struct.pack("<I", value))
+            fmt = "<i" if data_type == "Int32" else "<I"
+            f.write(struct.pack(fmt, value))
         else:
-            f.write(value.to_bytes(length, "little"))
+            f.write(value.to_bytes(length, "little", signed=("Int" in data_type)))
 
 def filter_parameters(parameters, version):
     """Filter out parameters missing a valid address for the current version."""
@@ -134,7 +137,8 @@ def load_initial_values(parameters, exe_path, version):
     for i, param in enumerate(parameters):
         address = param[address_key].strip()
         length = int(param["Length"]) if param["Length"].isdigit() else 4
-        val = read_value_from_exe(exe_path, address, length)
+        data_type = param.get("Data type", "")
+        val = read_value_from_exe(exe_path, address, length, data_type)
         current_values[i] = val
     return current_values
 
@@ -185,7 +189,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("ICR2Edit v0.5.1")
+        self.setWindowTitle("ICR2Edit v0.5.2")
         self.setWindowIcon(QIcon(resource_path("icon.ico")))
         self.resize(800, 600)
 
@@ -209,11 +213,11 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         """Update window title and status bar based on EXE path and save state."""
         if not self.exe_path:
             self.status.showMessage("No EXE loaded")
-            self.setWindowTitle("ICR2Edit v0.5.1")
+            self.setWindowTitle("ICR2Edit v0.5.2")
             return
         changed = "modified" if self.unsaved_changes else "saved"
         base_name = os.path.basename(self.exe_path)
-        self.setWindowTitle(f"ICR2Edit v0.5.1 - {base_name} [{self.version}, {changed}]")
+        self.setWindowTitle(f"ICR2Edit v0.5.2 - {base_name} [{self.version}, {changed}]")
         self.status.clearMessage()
 
     def revert_all_changes(self):
@@ -293,7 +297,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         text_label.setAlignment(QtCore.Qt.AlignLeft)
         text_label.setWordWrap(True)
         text_label.setText(
-            "<b>ICR2Edit v0.5.1</b><br><br>"
+            "<b>ICR2Edit v0.5.2</b><br><br>"
             "A game parameter editor for IndyCar Racing II.<br>"
             "Supports DOS, Windows, and Rendition EXEs.<br><br>"
             "Created by SK Chow.<br><br>"
@@ -621,7 +625,11 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 "UInt8": (0, 0xFF),
                 "UInt16": (0, 0xFFFF),
                 "UInt32": (0, 0xFFFFFFFF),
+                "Int8": (-128, 127),
+                "Int16": (-32768, 32767),
+                "Int32": (-2147483648, 2147483647),
             }
+
             min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
 
             spinbox = QtWidgets.QSpinBox()
@@ -734,7 +742,9 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 continue
             address = param[address_key].strip()
             length = int(param["Length"]) if param["Length"].isdigit() else 4
-            write_value_to_exe(self.exe_path, address, length, values[i])
+            data_type = param.get("Data type", "")
+            write_value_to_exe(self.exe_path, address, length, values[i], data_type)
+
 
 # ---- Application Entry Point ----
 
