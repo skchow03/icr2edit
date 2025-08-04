@@ -6,6 +6,7 @@ A command-line tool for viewing and editing engine, chassis and other parameters
 
 # Version history
 
+- v0.5.2 - August 3, 2025: Added support for signed integers
 - v0.5.1 - July 22, 2025: Added support for DOS32A Rendition version
 - v0.4 - July 1, 2025: Added GUI, general improvements
 - v0.3 - June 1, 2025: redid the interface and added more parameters to edit
