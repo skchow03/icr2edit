@@ -6,6 +6,7 @@ F9CE4,DD32C,115414,F35E0,2,UInt16,1290,Engine parameters Ford,Torque coefficient
 F9CE8,DD330,115418,F35E4,2,UInt16,8675,Engine parameters Ford,Torque coefficient 2,Affects how curve drops from peak (use Torque Curve Visualizer)
 F9CEC,DD334,11541C,F35E8,4,UInt32,0,Engine parameters Ford,Torque adjustment,Overall adjustment factor (increases entire torque curve)
 F9CF0,DD338,115420,F35EC,2,UInt16,6500,Engine parameters Ford,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
+F9CF6,,,,2,UInt16,18,Engine parameters Ford,Durability coefficient,
 F9CF8,DD340,115428,F35F4,2,UInt16,6290,Engine parameters Mercedes,Fuel consumption rate,Lower = less fuel used 
 F9CFC,DD344,11542C,F35F8,2,UInt16,6500,Engine parameters Mercedes,RPM upshift point,Used for autoshift/red light (multiply value here by 2)
 F9D00,DD348,115430,F35FC,2,UInt16,3900,Engine parameters Mercedes,RPM downshift point,Used for autoshift/red light (multiply value here by 2)
@@ -13,6 +14,7 @@ F9D04,DD34C,115434,F3600,2,UInt16,1236,Engine parameters Mercedes,Torque coeffic
 F9D08,DD350,115438,F3604,2,UInt16,8308,Engine parameters Mercedes,Torque coefficient 2,Affects how curve drops from peak (use Torque Curve Visualizer)
 F9D0C,DD354,11543C,F3608,4,UInt32,2000000,Engine parameters Mercedes,Torque adjustment,Overall adjustment factor (increases entire torque curve)
 F9D10,DD358,115440,F360C,2,UInt16,6500,Engine parameters Mercedes,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
+F9D16,,,,2,UInt16,18,Engine parameters Mercedes,Durability coefficient,
 F9D18,DD360,115448,F3614,2,UInt16,6290,Engine parameters Honda,Fuel consumption rate,Lower = less fuel used 
 F9D1C,DD364,11544C,F3618,2,UInt16,6750,Engine parameters Honda,RPM upshift point,Used for autoshift/red light (multiply value here by 2)
 F9D20,DD368,115450,F361C,2,UInt16,4100,Engine parameters Honda,RPM downshift point,Used for autoshift/red light (multiply value here by 2)
@@ -20,6 +22,7 @@ F9D24,DD36C,115454,F3620,2,UInt16,1180,Engine parameters Honda,Torque coefficien
 F9D28,DD370,115458,F3624,2,UInt16,7637,Engine parameters Honda,Torque coefficient 2,Affects how curve drops from peak (use Torque Curve Visualizer)
 F9D2C,DD374,11545C,F3628,4,UInt32,1000000,Engine parameters Honda,Torque adjustment,Overall adjustment factor (increases entire torque curve)
 F9D30,DD378,115460,F362C,2,UInt16,6750,Engine parameters Honda,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
+F9D36,,,,2,UInt16,18,Engine parameters Honda,Durability coefficient,
 F9D44,DD38C,115474,F3640,2,UInt16,7500,Chassis parameters Lola,Engine placement ??,"Lower value - engine moved closer to chassis center (front), rear of the car is stable. Higher value - engine moved to the rear, more oversteer, hard to control rear of the car."
 F9D48,DD390,115478,F3644,2,UInt16,33000,Chassis parameters Lola,Road course downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
 F9D4C,DD394,11547C,F3648,2,UInt16,28000,Chassis parameters Lola,Speedway downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
@@ -48,14 +51,14 @@ F9D88,DD3D0,1154B8,F3684,2,UInt16,43691,Chassis parameters Reynard,Chassis weigh
 6DF30,6D7EA,8C174,6A340,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
 6DF37,6D7F0,8C179,6A345,2,UInt16,250,Engine physics,RPM change rate,Higher value = faster shift
 6DFB9,,8C1FB,6A3C7,2,UInt16,17184,Engine physics,Torque multiplier,Lower value = lower power
-6E002,6D8AF,8C240,6A40C,2,UInt16,6000,Engine physics,Torque cap,Increasing this makes car unstable at low speed (like having wheelspin). Default value may have a purpose like traction control.
-6E009,6D8C5,8C245,6A411,2,UInt16,6000,Engine physics,Torque cap,Increasing this makes car unstable at low speed (like having wheelspin). Default value may have a purpose like traction control.
+6E002,6D8AF,8C240,6A40C,2,UInt16,6000,Engine physics,Drive output cap comparison,"Upper limit used in drivetrain/engine-output calculation. Keep matched with Drive output cap value."
+6E009,6D8C5,8C245,6A411,2,UInt16,6000,Engine physics,Drive output cap value,"Value substituted when calculated output exceeds cap. Keep matched with comparison constant."
 ,6D8CB,,,2,UInt16,6000,Engine physics,Boost related,Unknown effect
-6E00E,6D8CF,,,2,UInt16,17929,Engine physics,Boost related,Unknown effect
+6E00E,6D8CF,,,2,UInt16,17929,Engine physics,Base manifold pressure,"Internal pressure corresponding to atmospheric/base pressure; same constant used by boost-gauge conversion."
 6E4EE,6DE61,,,2,UInt16,750,Engine physics,RPM limit adjustment,Higher value = higher RPM limit before engine blowing
 ,6A937,,,2,UInt16,49151,Engine physics,Boost related,Base power when boost 1
-6E0CA,,,,2,UInt16,20000,Engine physics,Boost related,Unknown effect
-700FD,6FA0E,,,4,UInt32,9830400,Engine physics,Engine health ??,
+6E0CA,,,,2,UInt16,20000,Engine physics,Boost pressure target offset,"Added while calculating target manifold/boost pressure before smoothing."
+700FD,6FA0E,,,4,UInt32,9830400,Engine physics,Initial engine condition,Initial engine condition = 150.0 in 16.16 fixed point
 FEFD4,DBE68,,,1,UInt8,20,Points 1-12,Pos 1,
 FEFD5,DBE69,,,1,UInt8,16,Points 1-12,Pos 2,
 FEFD6,DBE6A,,,1,UInt8,14,Points 1-12,Pos 3,
@@ -120,10 +123,10 @@ BC72A,,C329A,A1466,1,UInt8,31,Other,Max opponents,
 6B305,,,,2,UInt16,17929,Other,Boost display calc [A],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
 6B30A,,,,2,UInt16,1616,Other,Boost display calc [B],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
 6B317,,,,1,UInt8,29,Other,Boost display calc [C],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
-6B226,,,,2,UInt16,1190,Engine physics,Boost high value?,
-6B22D,,,,2,UInt16,1190,Engine physics,Boost high value?,
-6B233,,,,2,UInt16,250,Engine physics,Boost low value?,
-6B23A,,,,2,UInt16,250,Engine physics,Boost low value?,
+6B226,,,,2,UInt16,1190,Transmission physics,Gear ratio maximum,"Upper clamp for six adjustable gear-ratio values."
+6B22D,,,,2,UInt16,1190,Transmission physics,Gear ratio maximum clamp value,"Value assigned when requested gear ratio exceeds maximum."
+6B233,,,,2,UInt16,250,Transmission physics,Gear ratio minimum,"Lower clamp for six adjustable gear-ratio values."
+6B23A,,,,2,UInt16,250,Transmission physics,Gear ratio minimum clamp value,"Value assigned when requested gear ratio falls below minimum."
 F9C08,,,,2,UInt16,52089,Engine physics,Boost table,
 F9C0A,,,,2,UInt16,33396,Engine physics,Boost table,
 F9C0C,,,,2,UInt16,22847,Engine physics,Boost table,
@@ -150,3 +153,12 @@ BC441,,C2FB1,A117D,1,UInt8,32,Other,Draw behind,
 ,,9B069,79235,4,Int32,-3429,Other,In-car cam - longitudinal pos,Negative is towards the back
 ,,9B078,79244,4,Int32,-5420,Other,In-car cam - lateral pos,Negative is towards the right
 ,,9B086,79252,4,Int32,8752,Other,In-car cam - height,
+70AFA,,,,4,UInt32,64554,Tire physics experimental,Grip curve base,"Suspected maximum/base tire coefficient. Lower should reduce available grip. Experimental."
+70AF3,,,,4,UInt32,2950,Tire physics experimental,Grip curve linear falloff,"Suspected linear reduction in tire coefficient. Higher should make grip fall away faster. Experimental."
+70B0F,,,,4,UInt32,4915,Tire physics experimental,Grip curve quadratic falloff,"Suspected quadratic reduction in tire coefficient. Higher should make falloff increasingly aggressive. Experimental."
+70B0A,,,,4,UInt32,10000000,Tire physics experimental,Grip curve quadratic divisor,"Divisor used by suspected tire coefficient curve. Lower magnifies quadratic falloff. Experimental."
+70B1D,,,,4,UInt32,5000,Tire physics experimental,Grip curve minimum A,"First occurrence of suspected minimum coefficient clamp. Experimental."
+70B24,,,,4,UInt32,5000,Tire physics experimental,Grip curve minimum B,"Second occurrence of suspected minimum coefficient clamp. Probably should normally match minimum A. Experimental."
+70B3E,,,,4,UInt32,1100,Tire physics experimental,Grip curve input scale,"Input scaling associated with suspected tire coefficient calculation. Experimental."
+7087B,,,,4,UInt32,2000,Tire physics experimental,Low-speed slip upper threshold,"Suspected upper threshold for special low-speed tire/slip handling. Experimental."
+70882,,,,4,UInt32,300,Tire physics experimental,Low-speed slip lower threshold,"Suspected lower threshold for special low-speed tire/slip handling. Experimental."
