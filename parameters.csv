@@ -137,15 +137,15 @@ F9C12,,,,2,UInt16,22410,Engine physics,Boost table,
 8BB6B,,,,2,UInt16,1000,Engine physics,Boost value low clamp,
 8BB71,,,,2,UInt16,10000,Engine physics,Boost value high clamp,
 8BB78,,,,2,UInt16,10000,Engine physics,Boost value high clamp,
-FD25C,,,,4,UInt32,256,Engine specific ?,Output scalar ?,Possibly a different value for each of 3 engines
-FD260,,,,4,UInt32,252,Engine specific ?,Output scalar ?,Possibly a different value for each of 3 engines
-FD264,,,,4,UInt32,240,Engine specific ?,Output scalar ?,Possibly a different value for each of 3 engines
-FD268,,,,4,UInt32,6250,Engine specific ?,Torque limit ?,Possibly a different value for each of 3 engines
-FD26C,,,,4,UInt32,6400,Engine specific ?,Torque limit ?,Possibly a different value for each of 3 engines
-FD270,,,,4,UInt32,6750,Engine specific ?,Torque limit ?,Possibly a different value for each of 3 engines
-FD274,,,,4,UInt32,3750,Engine specific ?,Fallback min ?,Possibly a different value for each of 3 engines
-FD278,,,,4,UInt32,3900,Engine specific ?,Fallback min ?,Possibly a different value for each of 3 engines
-FD27C,,,,4,UInt32,3900,Engine specific ?,Fallback min ?,Possibly a different value for each of 3 engines
+FD25C,,,,4,UInt32,256,Unused/legacy engine data,Output scalar ?,Possibly a different value for each of 3 engines
+FD260,,,,4,UInt32,252,Unused/legacy engine data,Output scalar ?,Possibly a different value for each of 3 engines
+FD264,,,,4,UInt32,240,Unused/legacy engine data,Output scalar ?,Possibly a different value for each of 3 engines
+FD268,,,,4,UInt32,6250,Unused/legacy engine data,Torque limit ?,Possibly a different value for each of 3 engines
+FD26C,,,,4,UInt32,6400,Unused/legacy engine data,Torque limit ?,Possibly a different value for each of 3 engines
+FD270,,,,4,UInt32,6750,Unused/legacy engine data,Torque limit ?,Possibly a different value for each of 3 engines
+FD274,,,,4,UInt32,3750,Unused/legacy engine data,Fallback min ?,Possibly a different value for each of 3 engines
+FD278,,,,4,UInt32,3900,Unused/legacy engine data,Fallback min ?,Possibly a different value for each of 3 engines
+FD27C,,,,4,UInt32,3900,Unused/legacy engine data,Fallback min ?,Possibly a different value for each of 3 engines
 BC3E8,,C2F58,A1124,1,UInt8,32,Other,Draw ahead,
 BC3F1,,C2F61,A112D,1,UInt8,32,Other,Draw ahead,
 BC438,,C2FA8,A1174,1,UInt8,32,Other,Draw behind,
@@ -162,3 +162,27 @@ BC441,,C2FB1,A117D,1,UInt8,32,Other,Draw behind,
 70B3E,,,,4,UInt32,1100,Tire physics experimental,Grip curve input scale,"Input scaling associated with suspected tire coefficient calculation. Experimental."
 7087B,,,,4,UInt32,2000,Tire physics experimental,Low-speed slip upper threshold,"Suspected upper threshold for special low-speed tire/slip handling. Experimental."
 70882,,,,4,UInt32,300,Tire physics experimental,Low-speed slip lower threshold,"Suspected lower threshold for special low-speed tire/slip handling. Experimental."
+
+F946C,,,,4,Int32,50445,Collision dimensions,Front-left longitudinal position,"Local collision-point coordinate; 500 units = 1 inch; higher = farther forward"
+F9470,,,,4,Int32,19700,Collision dimensions,Front-left lateral position,"Local collision-point coordinate; positive = left; 500 units = 1 inch"
+F9474,,,,4,Int32,-7735,Collision dimensions,Front-left vertical position,"Local collision-point coordinate; 500 units = 1 inch"
+
+F94B0,,,,4,Int32,57171,Collision dimensions,Nose-center longitudinal position,"Frontmost collision point; 500 units = 1 inch; higher = longer nose"
+F94B4,,,,4,Int32,0,Collision dimensions,Nose-center lateral position,"Local collision-point coordinate; normally centered"
+F94B8,,,,4,Int32,-5898,Collision dimensions,Nose-center vertical position,"Local collision-point coordinate; 500 units = 1 inch"
+
+F94F4,,,,4,Int32,50445,Collision dimensions,Front-right longitudinal position,"Local collision-point coordinate; 500 units = 1 inch; normally match front-left"
+F94F8,,,,4,Int32,-19700,Collision dimensions,Front-right lateral position,"Local collision-point coordinate; negative = right; 500 units = 1 inch"
+F94FC,,,,4,Int32,-7735,Collision dimensions,Front-right vertical position,"Local collision-point coordinate; 500 units = 1 inch"
+
+F9538,,,,4,Int32,-36500,Collision dimensions,Rear-right longitudinal position,"Local collision-point coordinate; negative = behind reference point; 500 units = 1 inch"
+F953C,,,,4,Int32,-19700,Collision dimensions,Rear-right lateral position,"Local collision-point coordinate; negative = right; 500 units = 1 inch"
+F9540,,,,4,Int32,-2253,Collision dimensions,Rear-right vertical position,"Local collision-point coordinate; 500 units = 1 inch"
+
+F957C,,,,4,Int32,-36500,Collision dimensions,Rear-center longitudinal position,"Local collision-point coordinate; normally match the rear corner points"
+F9580,,,,4,Int32,0,Collision dimensions,Rear-center lateral position,"Local collision-point coordinate; normally centered"
+F9584,,,,4,Int32,-2253,Collision dimensions,Rear-center vertical position,"Local collision-point coordinate; 500 units = 1 inch"
+
+F95C0,,,,4,Int32,-36500,Collision dimensions,Rear-left longitudinal position,"Local collision-point coordinate; negative = behind reference point; 500 units = 1 inch"
+F95C4,,,,4,Int32,19700,Collision dimensions,Rear-left lateral position,"Local collision-point coordinate; positive = left; 500 units = 1 inch"
+F95C8,,,,4,Int32,-2253,Collision dimensions,Rear-left vertical position,"Local collision-point coordinate; 500 units = 1 inch"
