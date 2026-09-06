@@ -137,15 +137,15 @@ F9C12,,,,2,UInt16,22410,Engine physics,Boost table,
 8BB6B,,,,2,UInt16,1000,Engine physics,Boost value low clamp,
 8BB71,,,,2,UInt16,10000,Engine physics,Boost value high clamp,
 8BB78,,,,2,UInt16,10000,Engine physics,Boost value high clamp,
-FD25C,,,,4,UInt32,256,Unused/legacy engine data,Output scalar ?,Possibly a different value for each of 3 engines
-FD260,,,,4,UInt32,252,Unused/legacy engine data,Output scalar ?,Possibly a different value for each of 3 engines
-FD264,,,,4,UInt32,240,Unused/legacy engine data,Output scalar ?,Possibly a different value for each of 3 engines
-FD268,,,,4,UInt32,6250,Unused/legacy engine data,Torque limit ?,Possibly a different value for each of 3 engines
-FD26C,,,,4,UInt32,6400,Unused/legacy engine data,Torque limit ?,Possibly a different value for each of 3 engines
-FD270,,,,4,UInt32,6750,Unused/legacy engine data,Torque limit ?,Possibly a different value for each of 3 engines
-FD274,,,,4,UInt32,3750,Unused/legacy engine data,Fallback min ?,Possibly a different value for each of 3 engines
-FD278,,,,4,UInt32,3900,Unused/legacy engine data,Fallback min ?,Possibly a different value for each of 3 engines
-FD27C,,,,4,UInt32,3900,Unused/legacy engine data,Fallback min ?,Possibly a different value for each of 3 engines
+FD25C,,,,4,UInt32,256,Engine audio experimental,Output scalar ?,Possibly a different value for each of 3 engines
+FD260,,,,4,UInt32,252,Engine audio experimental,Output scalar ?,Possibly a different value for each of 3 engines
+FD264,,,,4,UInt32,240,Engine audio experimental,Output scalar ?,Possibly a different value for each of 3 engines
+FD268,,,,4,UInt32,6250,Engine audio experimental,Torque limit ?,Possibly a different value for each of 3 engines
+FD26C,,,,4,UInt32,6400,Engine audio experimental,Torque limit ?,Possibly a different value for each of 3 engines
+FD270,,,,4,UInt32,6750,Engine audio experimental,Torque limit ?,Possibly a different value for each of 3 engines
+FD274,,,,4,UInt32,3750,Engine audio experimental,Fallback min ?,Possibly a different value for each of 3 engines
+FD278,,,,4,UInt32,3900,Engine audio experimental,Fallback min ?,Possibly a different value for each of 3 engines
+FD27C,,,,4,UInt32,3900,Engine audio experimental,Fallback min ?,Possibly a different value for each of 3 engines
 BC3E8,,C2F58,A1124,1,UInt8,32,Other,Draw ahead,
 BC3F1,,C2F61,A112D,1,UInt8,32,Other,Draw ahead,
 BC438,,C2FA8,A1174,1,UInt8,32,Other,Draw behind,
