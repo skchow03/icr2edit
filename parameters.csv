@@ -186,3 +186,7 @@ F9584,,,,4,Int32,-2253,Collision dimensions,Rear-center vertical position,"Local
 F95C0,,,,4,Int32,-36500,Collision dimensions,Rear-left longitudinal position,"Local collision-point coordinate; negative = behind reference point; 500 units = 1 inch"
 F95C4,,,,4,Int32,19700,Collision dimensions,Rear-left lateral position,"Local collision-point coordinate; positive = left; 500 units = 1 inch"
 F95C8,,,,4,Int32,-2253,Collision dimensions,Rear-left vertical position,"Local collision-point coordinate; 500 units = 1 inch"
+
+934DF,,,,4,UInt32,48052,Other,Pit speed limit warning,Native speed threshold corresponding to 80 mph; change together with both enforcement values
+93593,,,,4,UInt32,48052,Other,Pit speed limit enforcement A,Native speed threshold corresponding to 80 mph; change together with warning and enforcement B
+935C4,,,,4,UInt32,48052,Other,Pit speed limit enforcement B,Native speed threshold corresponding to 80 mph; change together with warning and enforcement A
