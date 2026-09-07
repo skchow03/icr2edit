@@ -103,11 +103,10 @@ F9CC4,DD30C,,,4,16.16,1158.00000,Tire physics experimental,RF tire starting cond
 F9CC8,DD310,,,4,16.16,1158.00000,Tire physics experimental,RR tire starting condition,lower value tyre will wear quckly
 F9CCC,DD314,,,4,16.16,1158.00000,Tire physics experimental,LR tire starting condition,lower value tyre will wear quckly
 F9CD0,DD318,,,4,16.16,1158.00000,Tire physics experimental,LF tire starting condition,lower value tyre will wear quckly
-F9CB4,DD2FC,,,2,UInt16,261,Tire physics experimental,RF,
-F9CB8,DD300,,,2,UInt16,261,Tire physics experimental,RR,
-F9CBC,DD304,,,2,UInt16,261,Tire physics experimental,LR,
-F9CC0,DD308,,,2,UInt16,261,Tire physics experimental,LF,
-
+F9CB4,DD2FC,,,4,Int32,261,Tire physics experimental,RF tire wear degradation divisor,"Quadratic divisor controlling how strongly tire condition loss affects RF tire performance. Larger values reduce the performance penalty from wear; smaller values increase it. Used as difference^2 / divisor. Must not be zero."
+F9CB8,DD300,,,4,Int32,261,Tire physics experimental,RR tire wear degradation divisor,"Quadratic divisor controlling how strongly tire condition loss affects RR tire performance. Larger values reduce the performance penalty from wear; smaller values increase it. Used as difference^2 / divisor. Must not be zero."
+F9CBC,DD304,,,4,Int32,261,Tire physics experimental,LR tire wear degradation divisor,"Quadratic divisor controlling how strongly tire condition loss affects LR tire performance. Larger values reduce the performance penalty from wear; smaller values increase it. Used as difference^2 / divisor. Must not be zero."
+F9CC0,DD308,,,4,Int32,261,Tire physics experimental,LF tire wear degradation divisor,"Quadratic divisor controlling how strongly tire condition loss affects LF tire performance. Larger values reduce the performance penalty from wear; smaller values increase it. Used as difference^2 / divisor. Must not be zero."
 F99A8,,,,2,Int16,13398,Tire physics experimental,TWear Soft Dry,"Tire wear coefficient for soft compound in dry conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
 F99AA,,,,2,Int16,8520,Tire physics experimental,TWear Medium Dry,"Tire wear coefficient for medium compound in dry conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
 F99AC,,,,2,Int16,6000,Tire physics experimental,TWear Hard Dry,"Tire wear coefficient for hard compound in dry conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
@@ -138,25 +137,37 @@ BC72A,,C329A,A1466,1,UInt8,31,Race,Max opponents,
 6B22D,,,,2,UInt16,1190,Transmission physics,Gear ratio maximum clamp value,"Value assigned when requested gear ratio exceeds maximum."
 6B233,,,,2,UInt16,250,Transmission physics,Gear ratio minimum,"Lower clamp for six adjustable gear-ratio values."
 6B23A,,,,2,UInt16,250,Transmission physics,Gear ratio minimum clamp value,"Value assigned when requested gear ratio falls below minimum."
-F9C08,,,,2,UInt16,52089,Engine physics,Boost table,
-F9C0A,,,,2,UInt16,33396,Engine physics,Boost table,
-F9C0C,,,,2,UInt16,22847,Engine physics,Boost table,
-F9C0E,,,,2,UInt16,22410,Engine physics,Boost table,
-F9C10,,,,2,UInt16,22410,Engine physics,Boost table,
-F9C12,,,,2,UInt16,22410,Engine physics,Boost table,
-8BB64,,,,2,UInt16,1000,Engine physics,Boost value low clamp,
-8BB6B,,,,2,UInt16,1000,Engine physics,Boost value low clamp,
-8BB71,,,,2,UInt16,10000,Engine physics,Boost value high clamp,
-8BB78,,,,2,UInt16,10000,Engine physics,Boost value high clamp,
-FD25C,,,,4,UInt32,256,Engine audio experimental,Output scalar ?,Possibly a different value for each of 3 engines
-FD260,,,,4,UInt32,252,Engine audio experimental,Output scalar ?,Possibly a different value for each of 3 engines
-FD264,,,,4,UInt32,240,Engine audio experimental,Output scalar ?,Possibly a different value for each of 3 engines
-FD268,,,,4,UInt32,6250,Engine audio experimental,Torque limit ?,Possibly a different value for each of 3 engines
-FD26C,,,,4,UInt32,6400,Engine audio experimental,Torque limit ?,Possibly a different value for each of 3 engines
-FD270,,,,4,UInt32,6750,Engine audio experimental,Torque limit ?,Possibly a different value for each of 3 engines
-FD274,,,,4,UInt32,3750,Engine audio experimental,Fallback min ?,Possibly a different value for each of 3 engines
-FD278,,,,4,UInt32,3900,Engine audio experimental,Fallback min ?,Possibly a different value for each of 3 engines
-FD27C,,,,4,UInt32,3900,Engine audio experimental,Fallback min ?,Possibly a different value for each of 3 engines
+F9B32,,,,2,UInt16,990,Engine physics,**Boost knob position 0 source value,** Highest original boost-knob source value. Converted at runtime to an unsigned 0.16 scalar using floor(value × 65536 ÷ 1199).,
+F9B34,,,,2,UInt16,750,Engine physics,**Boost knob position 1 source value,** Second boost-knob source value. Converted at runtime to the scalar stored in boost_scalar_table[1].,
+F9B36,,,,2,UInt16,590,Engine physics,**Boost knob position 2 source value,** Third boost-knob source value. Converted at runtime using value × 65536 ÷ 1199.,
+F9B38,,,,2,UInt16,490,Engine physics,**Boost knob position 3 source value,** Fourth boost-knob source value. Lower values produce a smaller boost scalar.,
+F9B3A,,,,2,UInt16,415,Engine physics,**Boost knob position 4 source value,** Fifth boost-knob source value. Converted into boost_scalar_table[4] during initialization.,
+F9B3C,,,,2,UInt16,410,Engine physics,**Boost knob position 5 source value,** Lowest original boost-knob source value. Produces the original minimum scalar of approximately 0.342.,
+8BB64,,,,2,UInt16,1000,Opponent engine audio,**Minimum pre-scale engine-speed value (comparison),**Lower clamp applied to the calculated opponent engine-speed value before engine-specific sound scaling. Must match 8BB6B.,
+
+8BB6B,,,,2,UInt16,1000,Opponent engine audio,**Minimum pre-scale engine-speed value (assignment),**Value substituted when the calculated opponent engine-speed value is below the lower clamp. Must match 8BB64.,
+
+8BB71,,,,2,UInt16,10000,Opponent engine audio,**Maximum pre-scale engine-speed value (comparison),**Upper clamp applied to the calculated opponent engine-speed value before engine-specific sound scaling. Must match 8BB78.,
+
+8BB78,,,,2,UInt16,10000,Opponent engine audio,**Maximum pre-scale engine-speed value (assignment),**Value substituted when the calculated opponent engine-speed value exceeds the upper clamp. Must match 8BB71.,
+
+FD25C,,,,4,UInt32,256,Opponent engine audio,**Engine 1 sound RPM scale,**Final engine-specific scaling applied after gear selection and the 1000–10000 pre-scale clamp. Effective multiplier is value ÷ 128; default 256 gives 2.0.,FD25C,,,,4,UInt32,256,Opponent engine audio,**Engine 1 sound RPM scale,**Final scaling applied to the simulated opponent engine RPM after gear selection and clamping. Effective multiplier is value ÷ 128; default 256 gives 2.0.,
+
+FD260,,,,4,UInt32,252,Opponent engine audio,**Engine 2 sound RPM scale,**Final scaling applied to the simulated opponent engine RPM. Effective multiplier is value ÷ 128; default 252 gives 1.96875.,
+
+FD264,,,,4,UInt32,240,Opponent engine audio,**Engine 3 sound RPM scale,**Final scaling applied to the simulated opponent engine RPM. Effective multiplier is value ÷ 128; default 240 gives 1.875.,
+
+FD268,,,,4,UInt32,6250,Opponent engine audio,**Engine 1 sound upshift threshold,**Upper simulated engine-speed threshold used when selecting an opponent sound gear.,
+
+FD26C,,,,4,UInt32,6400,Opponent engine audio,**Engine 2 sound upshift threshold,**Upper simulated engine-speed threshold used when selecting an opponent sound gear.,
+
+FD270,,,,4,UInt32,6750,Opponent engine audio,**Engine 3 sound upshift threshold,**Upper simulated engine-speed threshold used when selecting an opponent sound gear.,
+
+FD274,,,,4,UInt32,3750,Opponent engine audio,**Engine 1 sound downshift threshold,**Lower hysteresis threshold for opponent sound-gear selection. The current higher gear is retained while its calculated engine speed remains above this value.,
+
+FD278,,,,4,UInt32,3900,Opponent engine audio,**Engine 2 sound downshift threshold,**Lower hysteresis threshold for opponent sound-gear selection, preventing rapid switching between adjacent gears.,
+
+FD27C,,,,4,UInt32,3900,Opponent engine audio,**Engine 3 sound downshift threshold,**Lower hysteresis threshold for opponent sound-gear selection, preventing rapid switching between adjacent gears.,
 BC3E8,,C2F58,A1124,1,UInt8,32,Other,Draw ahead,
 BC3F1,,C2F61,A112D,1,UInt8,32,Other,Draw ahead,
 BC438,,C2FA8,A1174,1,UInt8,32,Other,Draw behind,
