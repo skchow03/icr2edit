@@ -99,14 +99,25 @@ FEFF8,DBE8C,,,1,UInt8,0,Points 34-40,Pos 37,
 FEFF9,DBE8D,,,1,UInt8,0,Points 34-40,Pos 38,
 FEFFA,DBE8E,,,1,UInt8,0,Points 34-40,Pos 39,
 FEFFB,DBE8F,,,1,UInt8,0,Points 34-40,Pos 40,
-F9CC4,DD30C,,,4,UInt32,75890688,Tire physics experimental,RF tire starting condition,lower value tyre will wear quckly
-F9CC8,DD310,,,4,UInt32,75890688,Tire physics experimental,RR tire starting condition,lower value tyre will wear quckly
-F9CCC,DD314,,,4,UInt32,75890688,Tire physics experimental,LR tire starting condition,lower value tyre will wear quckly
-F9CD0,DD318,,,4,UInt32,75890688,Tire physics experimental,LF tire starting condition,lower value tyre will wear quckly
+F9CC4,DD30C,,,4,16.16,1158.00000,Tire physics experimental,RF tire starting condition,lower value tyre will wear quckly
+F9CC8,DD310,,,4,16.16,1158.00000,Tire physics experimental,RR tire starting condition,lower value tyre will wear quckly
+F9CCC,DD314,,,4,16.16,1158.00000,Tire physics experimental,LR tire starting condition,lower value tyre will wear quckly
+F9CD0,DD318,,,4,16.16,1158.00000,Tire physics experimental,LF tire starting condition,lower value tyre will wear quckly
 F9CB4,DD2FC,,,2,UInt16,261,Tire physics experimental,RF,
 F9CB8,DD300,,,2,UInt16,261,Tire physics experimental,RR,
 F9CBC,DD304,,,2,UInt16,261,Tire physics experimental,LR,
 F9CC0,DD308,,,2,UInt16,261,Tire physics experimental,LF,
+
+F99A8,,,,2,Int16,13398,Tire physics experimental,TWear Soft Dry,"Tire wear coefficient for soft compound in dry conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
+F99AA,,,,2,Int16,8520,Tire physics experimental,TWear Medium Dry,"Tire wear coefficient for medium compound in dry conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
+F99AC,,,,2,Int16,6000,Tire physics experimental,TWear Hard Dry,"Tire wear coefficient for hard compound in dry conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
+F99AE,,,,2,Int16,18198,Tire physics experimental,TWear Rain Dry,"Tire wear coefficient for rain compound in dry conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
+F99B0,,,,2,Int16,5400,Tire physics experimental,TWear Soft Wet,"Tire wear coefficient for soft compound in wet conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
+F99B2,,,,2,Int16,4200,Tire physics experimental,TWear Medium Wet,"Tire wear coefficient for medium compound in wet conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
+F99B4,,,,2,Int16,3600,Tire physics experimental,TWear Hard Wet,"Tire wear coefficient for hard compound in wet conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
+F99B6,,,,2,Int16,10500,Tire physics experimental,TWear Rain Wet,"Tire wear coefficient for rain compound in wet conditions. Lower values increase wear. Wear also increases with higher tire temperature and tire sliding."
+
+
 F9C6C,DD2B4,,,2,UInt16,57344,Brake bias,Value 1,
 F9C70,DD2B8,,,2,UInt16,50322,Brake bias,Value 2,
 F9C74,DD2BC,,,2,UInt16,43300,Brake bias,Value 3,
