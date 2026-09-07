@@ -99,14 +99,14 @@ FEFF8,DBE8C,,,1,UInt8,0,Points 34-40,Pos 37,
 FEFF9,DBE8D,,,1,UInt8,0,Points 34-40,Pos 38,
 FEFFA,DBE8E,,,1,UInt8,0,Points 34-40,Pos 39,
 FEFFB,DBE8F,,,1,UInt8,0,Points 34-40,Pos 40,
-F9CC4,DD30C,,,4,UInt32,75890688,Tire life,RF,lower value tyre will wear quckly
-F9CC8,DD310,,,4,UInt32,75890688,Tire life,RR,lower value tyre will wear quckly
-F9CCC,DD314,,,4,UInt32,75890688,Tire life,LR,lower value tyre will wear quckly
-F9CD0,DD318,,,4,UInt32,75890688,Tire life,LF,lower value tyre will wear quckly
-F9CB4,DD2FC,,,2,UInt16,261,Tire unknown,RF,
-F9CB8,DD300,,,2,UInt16,261,Tire unknown,RR,
-F9CBC,DD304,,,2,UInt16,261,Tire unknown,LR,
-F9CC0,DD308,,,2,UInt16,261,Tire unknown,LF,
+F9CC4,DD30C,,,4,UInt32,75890688,Tire physics experimental,RF tire starting condition,lower value tyre will wear quckly
+F9CC8,DD310,,,4,UInt32,75890688,Tire physics experimental,RR tire starting condition,lower value tyre will wear quckly
+F9CCC,DD314,,,4,UInt32,75890688,Tire physics experimental,LR tire starting condition,lower value tyre will wear quckly
+F9CD0,DD318,,,4,UInt32,75890688,Tire physics experimental,LF tire starting condition,lower value tyre will wear quckly
+F9CB4,DD2FC,,,2,UInt16,261,Tire physics experimental,RF,
+F9CB8,DD300,,,2,UInt16,261,Tire physics experimental,RR,
+F9CBC,DD304,,,2,UInt16,261,Tire physics experimental,LR,
+F9CC0,DD308,,,2,UInt16,261,Tire physics experimental,LF,
 F9C6C,DD2B4,,,2,UInt16,57344,Brake bias,Value 1,
 F9C70,DD2B8,,,2,UInt16,50322,Brake bias,Value 2,
 F9C74,DD2BC,,,2,UInt16,43300,Brake bias,Value 3,
