@@ -5,6 +5,7 @@ import struct
 import sys
 import json
 import subprocess
+from fixed_point import VALUE_MAX, VALUE_MIN, pack_fixed_16_16, unpack_fixed_16_16
 from torque_graph import TorqueGraphApp
 
 # PyQt5 for GUI
@@ -33,8 +34,18 @@ ADDRESS_KEYS = {
 
 # JSON file to store last opened folder path
 SETTINGS_FILE = "settings.json"
+FIXED_16_16_TYPES = {"16.16", "fixed16.16", "fixed16_16"}
 
 # ---- Utility Functions ----
+
+def is_fixed_16_16(data_type):
+    """Return whether a CSV data type denotes signed 16.16 fixed point."""
+    return data_type.strip().lower() in FIXED_16_16_TYPES
+
+
+def parse_parameter_value(value, data_type):
+    """Parse a CSV/default value according to its parameter data type."""
+    return float(value) if is_fixed_16_16(data_type) else int(value)
 
 def load_last_folder():
     """Load last used folder from settings.json (if it exists)."""
@@ -89,6 +100,10 @@ def read_value_from_exe(exe_path, address_hex, length, data_type=""):
         data = f.read(length)
         if len(data) != length:
             return None
+        if is_fixed_16_16(data_type):
+            if length != 4:
+                return None
+            return unpack_fixed_16_16(data)
         if length == 1:
             return struct.unpack("<b", data)[0] if data_type == "Int8" else struct.unpack("<B", data)[0]
         if length == 2:
@@ -105,7 +120,11 @@ def write_value_to_exe(exe_path, address_hex, length, value, data_type=""):
         return
     with open(exe_path, "rb+") as f:
         f.seek(offset)
-        if length == 1:
+        if is_fixed_16_16(data_type):
+            if length != 4:
+                raise ValueError("A 16.16 parameter must have a length of 4 bytes")
+            f.write(pack_fixed_16_16(value))
+        elif length == 1:
             fmt = "<b" if data_type == "Int8" else "<B"
             f.write(struct.pack(fmt, value))
         elif length == 2:
@@ -311,7 +330,10 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 if row < 0 or row >= len(valid_params):
                     continue
                 try:
-                    values[row] = int(valid_params[row]["Default value"].strip())
+                    param = valid_params[row]
+                    values[row] = parse_parameter_value(
+                        param["Default value"].strip(), param.get("Data type", "")
+                    )
                 except (KeyError, TypeError, ValueError):
                     continue
                 category_reset_count += 1
@@ -536,7 +558,8 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read file:\n{e}")
             return
 
-        # Map import keys to values
+        # Map import keys to value strings. Parsing happens after matching so the
+        # parameter's data type can distinguish integers from 16.16 decimals.
         imported_map = {}
         for row in imported:
             key = (
@@ -545,11 +568,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 row.get("Rendition address", "").strip().upper(),
                 row.get("Length", "").strip(),
             )
-            try:
-                value = int(row.get("Value", "").strip())
-                imported_map[key] = value
-            except ValueError:
-                continue
+            imported_map[key] = row.get("Value", "").strip()
 
         if not imported_map:
             QtWidgets.QMessageBox.information(self, "Import", "No valid entries found in file.")
@@ -571,7 +590,12 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                     param.get("Length", "").strip(),
                 )
                 if key in imported_map:
-                    value = imported_map[key]
+                    try:
+                        value = parse_parameter_value(
+                            imported_map[key], param.get("Data type", "")
+                        )
+                    except ValueError:
+                        continue
                     current_vals[i] = value
                     changed_this_category = True
                     total_updated += 1
@@ -579,7 +603,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                     # If this is the currently visible category, update UI
                     if category == self.current_category:
                         widget = self.param_table.cellWidget(i, 2)
-                        if isinstance(widget, QtWidgets.QSpinBox):
+                        if isinstance(widget, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox)):
                             widget.setValue(value)
                             widget.setStyleSheet("background-color: yellow;")
 
@@ -721,13 +745,18 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 "Int32": (-2147483648, 2147483647),
             }
 
-            min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
-
-            spinbox = QtWidgets.QSpinBox()
+            if is_fixed_16_16(data_type):
+                min_val, max_val = VALUE_MIN, VALUE_MAX
+                spinbox = QtWidgets.QDoubleSpinBox()
+                spinbox.setDecimals(5)
+                spinbox.setSingleStep(1 / 65536)
+            else:
+                min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
+                spinbox = QtWidgets.QSpinBox()
+                spinbox.setSingleStep(1)
             spinbox.setMinimum(min_val)
             spinbox.setMaximum(min(max_val, 2147483647))
             spinbox.setValue(cur_val)
-            spinbox.setSingleStep(1)
             spinbox.setAccelerated(True)
 
             if cur_val != orig_val:
@@ -735,7 +764,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
             def on_change(val, row=i):
                 sender = self.sender()
-                if isinstance(sender, QtWidgets.QSpinBox):
+                if isinstance(sender, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox)):
                     sender.setStyleSheet("background-color: yellow;")
                 self.current_values[row] = val
                 self.unsaved_changes[self.current_category] = (

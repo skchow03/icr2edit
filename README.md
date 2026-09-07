@@ -21,6 +21,8 @@ A tool for viewing and editing engine, chassis and other parameters in IndyCar R
 - Add or remove editable parameters using parameters.csv
 - Edit any individual parameter by engine/chassis and index
 - Save changes directly to the EXE
+- Display and edit signed 16.16 fixed-point parameters as decimal values while
+  storing them in their four-byte little-endian representation
 
 ---
 
