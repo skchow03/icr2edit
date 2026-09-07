@@ -172,9 +172,9 @@ BC3E8,,C2F58,A1124,1,UInt8,32,Other,Draw ahead,
 BC3F1,,C2F61,A112D,1,UInt8,32,Other,Draw ahead,
 BC438,,C2FA8,A1174,1,UInt8,32,Other,Draw behind,
 BC441,,C2FB1,A117D,1,UInt8,32,Other,Draw behind,
-,,9B069,79235,4,Int32,-3429,Other,In-car cam - longitudinal pos,Negative is towards the back
-,,9B078,79244,4,Int32,-5420,Other,In-car cam - lateral pos,Negative is towards the right
-,,9B086,79252,4,Int32,8752,Other,In-car cam - height,
+81F29,,9B069,79235,4,Int32,-3429,Other,In-car cam - longitudinal pos,Negative is towards the back
+81F38,,9B078,79244,4,Int32,-5420,Other,In-car cam - lateral pos,Negative is towards the right
+81F46,,9B086,79252,4,Int32,8752,Other,In-car cam - height,
 70AFA,,,,4,UInt32,64554,Tire physics experimental,Grip curve base,"Suspected maximum/base tire coefficient. Lower should reduce available grip. Experimental."
 70AF3,,,,4,UInt32,2950,Tire physics experimental,Grip curve linear falloff,"Suspected linear reduction in tire coefficient. Higher should make grip fall away faster. Experimental."
 70B0F,,,,4,UInt32,4915,Tire physics experimental,Grip curve quadratic falloff,"Suspected quadratic reduction in tire coefficient. Higher should make falloff increasingly aggressive. Experimental."
