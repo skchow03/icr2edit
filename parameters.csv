@@ -58,7 +58,7 @@ F9D88,DD3D0,1154B8,F3684,2,UInt16,43691,Chassis parameters Reynard,Chassis weigh
 6E4EE,6DE61,,,2,UInt16,750,Engine physics,RPM limit adjustment,Higher value = higher RPM limit before engine blowing
 ,6A937,,,2,UInt16,49151,Engine physics,Boost related,Base power when boost 1
 6E0CA,,,,2,UInt16,20000,Engine physics,Boost pressure target offset,"Added while calculating target manifold/boost pressure before smoothing."
-700FD,6FA0E,,,4,UInt32,9830400,Engine physics,Initial engine condition,Initial engine condition = 150.0 in 16.16 fixed point
+700FD,6FA0E,,,4,Fixed16.16,150.0,Engine physics,Initial engine condition,Initial engine condition = 150.0 in 16.16 fixed point
 FEFD4,DBE68,,,1,UInt8,20,Points 1-12,Pos 1,
 FEFD5,DBE69,,,1,UInt8,16,Points 1-12,Pos 2,
 FEFD6,DBE6A,,,1,UInt8,14,Points 1-12,Pos 3,
