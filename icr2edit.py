@@ -253,6 +253,85 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         if self.category_list.count() > 0:
             self.category_list.setCurrentRow(0)  # triggers on_category_select automatically
 
+    def reset_values_to_defaults(self, selected_only=False):
+        """Stage default values for all parameters or only checked parameters."""
+        if not self.exe_path or not self.parameters_by_category:
+            QtWidgets.QMessageBox.warning(self, "No Parameters", "No parameters loaded.")
+            return
+
+        if selected_only:
+            reset_targets = {
+                category: rows
+                for category, rows in self.checked_parameters.items()
+                if rows
+            }
+            if not reset_targets:
+                QtWidgets.QMessageBox.information(
+                    self, "No Selection", "No parameters were selected."
+                )
+                return
+            title = "Reset Selected Values"
+            message = (
+                "Reset all checked parameters to their default values?\n\n"
+                "The changes will not be written to the EXE until you save."
+            )
+        else:
+            reset_targets = {
+                category: None for category in self.parameters_by_category
+            }
+            title = "Reset All Values"
+            message = (
+                "Reset ALL parameters to their default values?\n\n"
+                "The changes will not be written to the EXE until you save."
+            )
+
+        reply = QtWidgets.QMessageBox.question(
+            self,
+            title,
+            message,
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+            QtWidgets.QMessageBox.No,
+        )
+        if reply != QtWidgets.QMessageBox.Yes:
+            return
+
+        reset_count = 0
+        for category, selected_rows in reset_targets.items():
+            raw_params = self.parameters_by_category.get(category, [])
+            valid_params = filter_parameters(raw_params, self.version)
+            existing_changes = self.unsaved_changes.get(category)
+            if existing_changes:
+                values = existing_changes[1].copy()
+            else:
+                values = load_initial_values(valid_params, self.exe_path, self.version)
+
+            rows = range(len(valid_params)) if selected_rows is None else selected_rows
+            category_reset_count = 0
+            for row in rows:
+                if row < 0 or row >= len(valid_params):
+                    continue
+                try:
+                    values[row] = int(valid_params[row]["Default value"].strip())
+                except (KeyError, TypeError, ValueError):
+                    continue
+                category_reset_count += 1
+
+            if category_reset_count:
+                self.unsaved_changes[category] = (valid_params, values)
+                reset_count += category_reset_count
+
+        if hasattr(self, "current_category") and self.current_category in self.unsaved_changes:
+            self.current_params, self.current_values = self.unsaved_changes[self.current_category]
+            self.populate_params()
+
+        self.update_status()
+        self.update_category_list_styles()
+        QtWidgets.QMessageBox.information(
+            self,
+            "Defaults Restored",
+            f"{reset_count} parameter{'s' if reset_count != 1 else ''} reset to default values.",
+        )
+
 
 
     def closeEvent(self, event):
@@ -363,6 +442,17 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         file_menu.addAction(exit_action)
 
         tools_menu = self.menuBar().addMenu("&Tools")
+        reset_all_action = QtWidgets.QAction("Reset all values to defaults", self)
+        reset_all_action.triggered.connect(self.reset_values_to_defaults)
+        tools_menu.addAction(reset_all_action)
+
+        reset_selected_action = QtWidgets.QAction("Reset selected values to defaults", self)
+        reset_selected_action.triggered.connect(
+            lambda checked=False: self.reset_values_to_defaults(selected_only=True)
+        )
+        tools_menu.addAction(reset_selected_action)
+        tools_menu.addSeparator()
+
         # Torque graph launcher
         torque_action = QtWidgets.QAction("Launch Torque Curve Visualizer", self)
         torque_action.triggered.connect(self.launch_torque_visualizer)
@@ -574,6 +664,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self.version = version
         self.parameters_by_category = params_by_cat
         self.unsaved_changes.clear()
+        self.checked_parameters.clear()
 
         # UI update
         self.category_list.clear()
