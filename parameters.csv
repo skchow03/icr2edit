@@ -136,17 +136,16 @@ BC72A,,C329A,A1466,1,UInt8,31,Race,Max opponents,
 6B30A,,,,2,UInt16,1616,Other,Boost display calc [B],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
 6B317,,,,1,UInt8,29,Other,Boost display calc [C],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
 
-6B226,,,,2,UInt16,1190,Transmission physics,Gear ratio maximum,"Upper clamp for six adjustable gear-ratio values."
-6B22D,,,,2,UInt16,1190,Transmission physics,Gear ratio maximum clamp value,"Value assigned when requested gear ratio exceeds maximum."
-6B233,,,,2,UInt16,250,Transmission physics,Gear ratio minimum,"Lower clamp for six adjustable gear-ratio values."
-6B23A,,,,2,UInt16,250,Transmission physics,Gear ratio minimum clamp value,"Value assigned when requested gear ratio falls below minimum."
-
-F9B32,,,,2,UInt16,990,Engine physics,**Boost knob position 0 source value,** Highest original boost-knob source value. Converted at runtime to an unsigned 0.16 scalar using floor(value × 65536 ÷ 1199).,
-F9B34,,,,2,UInt16,750,Engine physics,**Boost knob position 1 source value,** Second boost-knob source value. Converted at runtime to the scalar stored in boost_scalar_table[1].,
-F9B36,,,,2,UInt16,590,Engine physics,**Boost knob position 2 source value,** Third boost-knob source value. Converted at runtime using value × 65536 ÷ 1199.,
-F9B38,,,,2,UInt16,490,Engine physics,**Boost knob position 3 source value,** Fourth boost-knob source value. Lower values produce a smaller boost scalar.,
-F9B3A,,,,2,UInt16,415,Engine physics,**Boost knob position 4 source value,** Fifth boost-knob source value. Converted into boost_scalar_table[4] during initialization.,
-F9B3C,,,,2,UInt16,410,Engine physics,**Boost knob position 5 source value,** Lowest original boost-knob source value. Produces the original minimum scalar of approximately 0.342.,
+6B226,,,,2,UInt16,1190,Transmission,Gear ratio maximum,"Upper clamp for six adjustable gear-ratio values."
+6B22D,,,,2,UInt16,1190,Transmission,Gear ratio maximum clamp value,"Value assigned when requested gear ratio exceeds maximum."
+6B233,,,,2,UInt16,250,Transmission,Gear ratio minimum,"Lower clamp for six adjustable gear-ratio values."
+6B23A,,,,2,UInt16,250,Transmission,Gear ratio minimum clamp value,"Value assigned when requested gear ratio falls below minimum."
+F9B32,,,,2,UInt16,990,Transmission,**1st gear ratio ×100,** Default first-gear ratio. A stored value of 990 represents 9.90:1. Converted at initialization to an unsigned 0.16 drivetrain scalar using floor(value × 65536 ÷ 1199). Higher values make the gear shorter and increase engine RPM at a given road speed.,
+F9B34,,,,2,UInt16,750,Transmission,**2nd gear ratio ×100,** Default second-gear ratio. A stored value of 750 represents 7.50:1. Converted into the second entry of the six-element internal gear-ratio scalar table.,
+F9B36,,,,2,UInt16,590,Transmission,**3rd gear ratio ×100,** Default third-gear ratio. A stored value of 590 represents 5.90:1. Higher values shorten third gear; lower values lengthen it.,
+F9B38,,,,2,UInt16,490,Transmission,**4th gear ratio ×100,** Default fourth-gear ratio. A stored value of 490 represents 4.90:1. Converted into the fourth entry of the internal gear-ratio scalar table.,
+F9B3A,,,,2,UInt16,415,Transmission,**5th gear ratio ×100,** Default fifth-gear ratio. A stored value of 415 represents 4.15:1. Converted into the fifth entry of the internal gear-ratio scalar table.,
+F9B3C,,,,2,UInt16,410,Transmission,**6th gear ratio ×100,** Default sixth-gear ratio. A stored value of 410 represents 4.10:1 and is the tallest of the six original gears. Converted into the sixth entry of the internal gear-ratio scalar table.,
 
 8BB64,,,,2,UInt16,1000,Opponent engine audio,**Minimum pre-scale engine-speed value (comparison),**Lower clamp applied to the calculated opponent engine-speed value before engine-specific sound scaling. Must match 8BB6B.,
 8BB6B,,,,2,UInt16,1000,Opponent engine audio,**Minimum pre-scale engine-speed value (assignment),**Value substituted when the calculated opponent engine-speed value is below the lower clamp. Must match 8BB64.,
@@ -219,6 +218,11 @@ F95C8,,,,4,Int32,-2253,Collision dimensions,Rear-left vertical position,"Local c
 
 8FB17,,,,4,Int32,7000,Cockpit view,**Cockpit front-wheel vertical position (320x200 VGA),** Base vertical position of both front wheels rendered in the live cockpit view in standard VGA mode. Higher values move the wheels lower relative to the cockpit view.,
 8FB1E,,,,4,Int32,7700,Cockpit view,**Cockpit front-wheel vertical position (640x480 SVGA),"** Base vertical position of both front wheels rendered in the live cockpit view when VESA video mode 0x101 (640x480, 256-color SVGA) is active. Higher values move the wheels lower relative to the cockpit view.",
+
+8FB79,,,,4,Int32,17497,Cockpit view,**Cockpit front-wheel lateral position left,** Lateral position of one spinning front wheel rendered in the live cockpit view. Increasing the absolute value moves the wheel farther from the car centerline. Should normally be kept equal and opposite to 8FBF6.,
+8FBF6,,,,4,Int32,-17497,Cockpit view,**Cockpit front-wheel lateral position right,** Lateral position of the opposite spinning front wheel rendered in the live cockpit view. Increasing the absolute value moves the wheel farther from the car centerline. Should normally be kept equal and opposite to 8FB79.,
+8FB84,,,,4,Int32,22500,Cockpit view,**Cockpit front-wheel fore-aft position 1,** Longitudinal position of one spinning front wheel rendered in the live cockpit view. Change together with 8FC01 to move both wheels nearer to or farther from the player.,
+8FC01,,,,4,Int32,22500,Cockpit view,**Cockpit front-wheel fore-aft position 2,** Longitudinal position of the opposite spinning front wheel rendered in the live cockpit view. Change together with 8FB84.,
 
 6D39D,,,,4,UInt32,36863,Cockpit view,**Cockpit dynamic roll damping,** Controls transient roll movement of the live cockpit camera from uneven left/right surface or wheel inputs. Lower values increase side-to-side roll shake; higher values reduce it. Does not affect the external car model.,
 6D494,,,,4,UInt32,36863,Cockpit view,**Cockpit dynamic pitch damping,** Controls transient pitch movement of the live cockpit camera over rough or uneven surfaces. Lower values increase fore/aft pitch shake; higher values reduce it. Does not affect the external car model.,
