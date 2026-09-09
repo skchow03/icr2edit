@@ -99,6 +99,7 @@ FEFF8,DBE8C,,,1,UInt8,0,Points 34-40,Pos 37,
 FEFF9,DBE8D,,,1,UInt8,0,Points 34-40,Pos 38,
 FEFFA,DBE8E,,,1,UInt8,0,Points 34-40,Pos 39,
 FEFFB,DBE8F,,,1,UInt8,0,Points 34-40,Pos 40,
+
 F9CC4,DD30C,,,4,16.16,1158.00000,Tire physics experimental,RF tire starting condition,lower value tyre will wear quckly
 F9CC8,DD310,,,4,16.16,1158.00000,Tire physics experimental,RR tire starting condition,lower value tyre will wear quckly
 F9CCC,DD314,,,4,16.16,1158.00000,Tire physics experimental,LR tire starting condition,lower value tyre will wear quckly
@@ -130,51 +131,46 @@ F9C90,DD2D8,,,2,UInt16,29916,Brake bias,Default rear brake ??,
 F9C94,DD2DC,,,1,UInt8,9,Other,Default boost knob,
 BC726,,C3296,A1462,1,UInt8,31,Race,Max opponents,
 BC72A,,C329A,A1466,1,UInt8,31,Race,Max opponents,
+
 6B305,,,,2,UInt16,17929,Other,Boost display calc [A],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
 6B30A,,,,2,UInt16,1616,Other,Boost display calc [B],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
 6B317,,,,1,UInt8,29,Other,Boost display calc [C],"Boost display is calculated as (in_game_boost_pressure - A) / B + C, where A is likely the base boost pressure at Boost 1, B is a conversion factor, and C is the atmospheric pressure 29 in"
+
 6B226,,,,2,UInt16,1190,Transmission physics,Gear ratio maximum,"Upper clamp for six adjustable gear-ratio values."
 6B22D,,,,2,UInt16,1190,Transmission physics,Gear ratio maximum clamp value,"Value assigned when requested gear ratio exceeds maximum."
 6B233,,,,2,UInt16,250,Transmission physics,Gear ratio minimum,"Lower clamp for six adjustable gear-ratio values."
 6B23A,,,,2,UInt16,250,Transmission physics,Gear ratio minimum clamp value,"Value assigned when requested gear ratio falls below minimum."
+
 F9B32,,,,2,UInt16,990,Engine physics,**Boost knob position 0 source value,** Highest original boost-knob source value. Converted at runtime to an unsigned 0.16 scalar using floor(value × 65536 ÷ 1199).,
 F9B34,,,,2,UInt16,750,Engine physics,**Boost knob position 1 source value,** Second boost-knob source value. Converted at runtime to the scalar stored in boost_scalar_table[1].,
 F9B36,,,,2,UInt16,590,Engine physics,**Boost knob position 2 source value,** Third boost-knob source value. Converted at runtime using value × 65536 ÷ 1199.,
 F9B38,,,,2,UInt16,490,Engine physics,**Boost knob position 3 source value,** Fourth boost-knob source value. Lower values produce a smaller boost scalar.,
 F9B3A,,,,2,UInt16,415,Engine physics,**Boost knob position 4 source value,** Fifth boost-knob source value. Converted into boost_scalar_table[4] during initialization.,
 F9B3C,,,,2,UInt16,410,Engine physics,**Boost knob position 5 source value,** Lowest original boost-knob source value. Produces the original minimum scalar of approximately 0.342.,
+
 8BB64,,,,2,UInt16,1000,Opponent engine audio,**Minimum pre-scale engine-speed value (comparison),**Lower clamp applied to the calculated opponent engine-speed value before engine-specific sound scaling. Must match 8BB6B.,
-
 8BB6B,,,,2,UInt16,1000,Opponent engine audio,**Minimum pre-scale engine-speed value (assignment),**Value substituted when the calculated opponent engine-speed value is below the lower clamp. Must match 8BB64.,
-
 8BB71,,,,2,UInt16,10000,Opponent engine audio,**Maximum pre-scale engine-speed value (comparison),**Upper clamp applied to the calculated opponent engine-speed value before engine-specific sound scaling. Must match 8BB78.,
-
 8BB78,,,,2,UInt16,10000,Opponent engine audio,**Maximum pre-scale engine-speed value (assignment),**Value substituted when the calculated opponent engine-speed value exceeds the upper clamp. Must match 8BB71.,
-
 FD25C,,,,4,UInt32,256,Opponent engine audio,**Engine 1 sound RPM scale,**Final engine-specific scaling applied after gear selection and the 1000–10000 pre-scale clamp. Effective multiplier is value ÷ 128; default 256 gives 2.0.,FD25C,,,,4,UInt32,256,Opponent engine audio,**Engine 1 sound RPM scale,**Final scaling applied to the simulated opponent engine RPM after gear selection and clamping. Effective multiplier is value ÷ 128; default 256 gives 2.0.,
-
 FD260,,,,4,UInt32,252,Opponent engine audio,**Engine 2 sound RPM scale,**Final scaling applied to the simulated opponent engine RPM. Effective multiplier is value ÷ 128; default 252 gives 1.96875.,
-
 FD264,,,,4,UInt32,240,Opponent engine audio,**Engine 3 sound RPM scale,**Final scaling applied to the simulated opponent engine RPM. Effective multiplier is value ÷ 128; default 240 gives 1.875.,
-
 FD268,,,,4,UInt32,6250,Opponent engine audio,**Engine 1 sound upshift threshold,**Upper simulated engine-speed threshold used when selecting an opponent sound gear.,
-
 FD26C,,,,4,UInt32,6400,Opponent engine audio,**Engine 2 sound upshift threshold,**Upper simulated engine-speed threshold used when selecting an opponent sound gear.,
-
 FD270,,,,4,UInt32,6750,Opponent engine audio,**Engine 3 sound upshift threshold,**Upper simulated engine-speed threshold used when selecting an opponent sound gear.,
-
 FD274,,,,4,UInt32,3750,Opponent engine audio,**Engine 1 sound downshift threshold,**Lower hysteresis threshold for opponent sound-gear selection. The current higher gear is retained while its calculated engine speed remains above this value.,
-
 FD278,,,,4,UInt32,3900,Opponent engine audio,**Engine 2 sound downshift threshold,**Lower hysteresis threshold for opponent sound-gear selection, preventing rapid switching between adjacent gears.,
-
 FD27C,,,,4,UInt32,3900,Opponent engine audio,**Engine 3 sound downshift threshold,**Lower hysteresis threshold for opponent sound-gear selection, preventing rapid switching between adjacent gears.,
-BC3E8,,C2F58,A1124,1,UInt8,32,Other,Draw ahead,
-BC3F1,,C2F61,A112D,1,UInt8,32,Other,Draw ahead,
-BC438,,C2FA8,A1174,1,UInt8,32,Other,Draw behind,
-BC441,,C2FB1,A117D,1,UInt8,32,Other,Draw behind,
-81F29,,9B069,79235,4,Int32,-3429,Other,In-car cam - longitudinal pos,Negative is towards the back
-81F38,,9B078,79244,4,Int32,-5420,Other,In-car cam - lateral pos,Negative is towards the right
-81F46,,9B086,79252,4,Int32,8752,Other,In-car cam - height,
+
+BC3E8,,C2F58,A1124,1,UInt8,32,Graphics,Draw ahead,
+BC3F1,,C2F61,A112D,1,UInt8,32,Graphics,Draw ahead,
+BC438,,C2FA8,A1174,1,UInt8,32,Graphics,Draw behind,
+BC441,,C2FB1,A117D,1,UInt8,32,Graphics,Draw behind,
+
+81F29,,9B069,79235,4,Int32,-3429,Replay,In-car cam - longitudinal pos,Negative is towards the back
+81F38,,9B078,79244,4,Int32,-5420,Replay,In-car cam - lateral pos,Negative is towards the right
+81F46,,9B086,79252,4,Int32,8752,Replay,In-car cam - height,
+
 70AFA,,,,4,UInt32,64554,Tire physics experimental,Grip curve base,"Suspected maximum/base tire coefficient. Lower should reduce available grip. Experimental."
 70AF3,,,,4,UInt32,2950,Tire physics experimental,Grip curve linear falloff,"Suspected linear reduction in tire coefficient. Higher should make grip fall away faster. Experimental."
 70B0F,,,,4,UInt32,4915,Tire physics experimental,Grip curve quadratic falloff,"Suspected quadratic reduction in tire coefficient. Higher should make falloff increasingly aggressive. Experimental."
@@ -213,13 +209,16 @@ F95C8,,,,4,Int32,-2253,Collision dimensions,Rear-left vertical position,"Local c
 93593,,,,4,UInt32,48052,Race,Pit speed limit enforcement A,Native speed threshold corresponding to 80 mph; change together with warning and enforcement B
 935C4,,,,4,UInt32,48052,Race,Pit speed limit enforcement B,Native speed threshold corresponding to 80 mph; change together with warning and enforcement A
 
-8FC80,,,,4,Int32,10000,Other,**Cockpit local offset A 1,** First occurrence of the 10000 component in the fixed local cockpit-view vector transformed by the player car orientation in FUN_000387CC. Axis not yet confirmed; likely fore/aft. Must match 8FCDA and 8FD1D.,
-8FCDA,,,,4,Int32,10000,Other,**Cockpit local offset A 2,** Second occurrence of the 10000 component in the fixed local cockpit-view vector transformed by the player car orientation in FUN_000387CC. Axis not yet confirmed; likely fore/aft. Must match 8FC80 and 8FD1D.,
-8FD1D,,,,4,Int32,10000,Other,**Cockpit local offset A 3,** Third occurrence of the 10000 component in the fixed local cockpit-view vector transformed by the player car orientation in FUN_000387CC. Axis not yet confirmed; likely fore/aft. Must match 8FC80 and 8FCDA.,
+8FC80,,,,4,Int32,10000,Cockpit view,**Cockpit local offset A 1,** First occurrence of the 10000 component in the fixed local cockpit-view vector transformed by the player car orientation in FUN_000387CC. Axis not yet confirmed; likely fore/aft. Must match 8FCDA and 8FD1D.,
+8FCDA,,,,4,Int32,10000,Cockpit view,**Cockpit local offset A 2,** Second occurrence of the 10000 component in the fixed local cockpit-view vector transformed by the player car orientation in FUN_000387CC. Axis not yet confirmed; likely fore/aft. Must match 8FC80 and 8FD1D.,
+8FD1D,,,,4,Int32,10000,Cockpit view,**Cockpit local offset A 3,** Third occurrence of the 10000 component in the fixed local cockpit-view vector transformed by the player car orientation in FUN_000387CC. Axis not yet confirmed; likely fore/aft. Must match 8FC80 and 8FCDA.,
 
-8FCC3,,,,4,Int32,3500,Other,**Player cockpit camera height 1,** First occurrence of the live player cockpit eye-height offset used in FUN_000387CC. Controls the vertical position of the in-game cockpit viewpoint. Must match 8FD07 and 8FD4A.,
-8FD07,,,,4,Int32,3500,Other,**Player cockpit camera height 2,** Second occurrence of the live player cockpit eye-height offset used in FUN_000387CC. Controls the vertical position of the in-game cockpit viewpoint. Must match 8FCC3 and 8FD4A.,
-8FD4A,,,,4,Int32,3500,Other,**Player cockpit camera height 3,** Third occurrence of the live player cockpit eye-height offset used in FUN_000387CC. Controls the vertical position of the in-game cockpit viewpoint. Must match 8FCC3 and 8FD07.,
+8FCC3,,,,4,Int32,3500,Cockpit view,**Player cockpit camera height 1,** First occurrence of the live player cockpit eye-height offset used in FUN_000387CC. Controls the vertical position of the in-game cockpit viewpoint. Must match 8FD07 and 8FD4A.,
+8FD07,,,,4,Int32,3500,Cockpit view,**Player cockpit camera height 2,** Second occurrence of the live player cockpit eye-height offset used in FUN_000387CC. Controls the vertical position of the in-game cockpit viewpoint. Must match 8FCC3 and 8FD4A.,
+8FD4A,,,,4,Int32,3500,Cockpit view,**Player cockpit camera height 3,** Third occurrence of the live player cockpit eye-height offset used in FUN_000387CC. Controls the vertical position of the in-game cockpit viewpoint. Must match 8FCC3 and 8FD07.,
 
-8FB17,,,,4,Int32,7000,Other,**Cockpit front-wheel vertical base 1,** Base vertical position used for both front-wheel render objects in FUN_000385EC. The value is negated and combined with a dynamic wheel/suspension displacement before rendering. Increasing this value should move the cockpit-rendered wheels farther downward if the inferred axis/sign is correct.,
-8FB1E,,,,4,Int32,7700,Other,**Cockpit front-wheel vertical base 2,** Alternate front-wheel vertical base selected when graphics/display state DAT_0001178C equals 0x101. Same role as 8FB17 for the alternate display configuration. Increasing this value should move the cockpit-rendered wheels farther downward.,
+8FB17,,,,4,Int32,7000,Cockpit view,**Cockpit front-wheel vertical position (320x200 VGA),** Base vertical position of both front wheels rendered in the live cockpit view in standard VGA mode. Higher values move the wheels lower relative to the cockpit view.,
+8FB1E,,,,4,Int32,7700,Cockpit view,**Cockpit front-wheel vertical position (640x480 SVGA),"** Base vertical position of both front wheels rendered in the live cockpit view when VESA video mode 0x101 (640x480, 256-color SVGA) is active. Higher values move the wheels lower relative to the cockpit view.",
+
+6D39D,,,,4,UInt32,36863,Cockpit view,**Cockpit dynamic roll damping,** Controls transient roll movement of the live cockpit camera from uneven left/right surface or wheel inputs. Lower values increase side-to-side roll shake; higher values reduce it. Does not affect the external car model.,
+6D494,,,,4,UInt32,36863,Cockpit view,**Cockpit dynamic pitch damping,** Controls transient pitch movement of the live cockpit camera over rough or uneven surfaces. Lower values increase fore/aft pitch shake; higher values reduce it. Does not affect the external car model.,
