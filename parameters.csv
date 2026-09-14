@@ -23,13 +23,13 @@ F9D28,DD370,115458,F3624,2,UInt16,7637,Engine parameters Honda,Torque coefficien
 F9D2C,DD374,11545C,F3628,4,UInt32,1000000,Engine parameters Honda,Torque adjustment,Overall adjustment factor (increases entire torque curve)
 F9D30,DD378,115460,F362C,2,UInt16,6750,Engine parameters Honda,RPM limit,"Slightly lower than rev limit (multiply value here by 2). Edit in conjunction with ""RPM limit adjustment"" under Engine Physics category"
 F9D36,,,,2,UInt16,18,Engine parameters Honda,Durability coefficient,
-F9D44,DD38C,115474,F3640,2,UInt16,7500,Chassis parameters Lola,Engine placement ??,"Lower value - engine moved closer to chassis center (front), rear of the car is stable. Higher value - engine moved to the rear, more oversteer, hard to control rear of the car."
-F9D48,DD390,115478,F3644,2,UInt16,33000,Chassis parameters Lola,Road course downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
-F9D4C,DD394,11547C,F3648,2,UInt16,28000,Chassis parameters Lola,Speedway downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
-F9D50,DD398,115480,F364C,2,UInt16,255,Chassis parameters Lola,Road course weight balance ??,"It's roadcourse chassis weight (or maybe downforce) balance. Lower value = more front weight (?more rear downforce), stable car. Higher value = more rear weight (?less rear downforce), oversteer."
-F9D54,DD39C,115484,F3650,2,UInt16,260,Chassis parameters Lola,Speedway weight balance ??,"It's speedway chassis weight (or maybe downforce) balance. Lower value = more front weight (?more rear downforce), stable car.
-Higher value = more rear weight (?less rear downforce), oversteer."
-F9D58,DD3A0,115488,F3654,2,UInt16,43691,Chassis parameters Lola,Chassis weight,"Higher value = more weight, car heavy as tank. Lower value - light car, hard to control on high speeds."
+F9D44,DD38C,115474,F3640,2,UInt16,7500,Chassis parameters Lola,Base chassis weight,"Base vehicle weight before the fuel-derived weight is added. Higher values make the car heavier and reduce acceleration and responsiveness; lower values make it lighter. Stored in a 4-byte slot, but only the lower 16 bits are loaded."
+F9D48,DD390,115478,F3644,2,UInt16,33000,Chassis parameters Lola,Road-course body drag coefficient,"Road-course body aerodynamic coefficient, approximately an unsigned 16.16 fraction. Higher values increase body drag. Body downforce is subsequently derived from this drag term, so this also increases body downforce proportionally."
+F9D4C,DD394,11547C,F3648,2,UInt16,28000,Chassis parameters Lola,Speedway body drag coefficient,"Speedway body aerodynamic coefficient, approximately an unsigned 16.16 fraction. Higher values increase body drag. Body downforce is subsequently derived from this drag term, so this also increases body downforce proportionally."
+F9D50,DD398,115480,F364C,2,UInt16,255,Chassis parameters Lola,Road-course body downforce-to-drag ratio,"Road-course multiplier used to derive body downforce from the calculated body-drag term. Stored in hundredths: 255 represents approximately 2.55. Higher values increase body downforce without directly increasing the underlying body-drag term."
+F9D54,DD39C,115484,F3650,2,UInt16,260,Chassis parameters Lola,Speedway body downforce-to-drag ratio,"Speedway multiplier used to derive body downforce from the calculated body-drag term. Stored in hundredths: 260 represents approximately 2.60. Higher values increase body downforce without directly increasing the underlying body-drag term."
+F9D58,DD3A0,115488,F3654,2,UInt16,43691,Chassis parameters Lola,Body downforce rear distribution,"Unsigned 16.16 fraction controlling how the calculated body downforce is divided between the axles. 43691 is approximately 66.67% rear and 33.33% front. Higher values move body downforce rearward; lower values move it forward. Does not change total downforce or drag."
+
 F9D5C,DD3A4,11548C,F3658,2,UInt16,7550,Chassis parameters Penske,Engine placement ??,"Lower value - engine moved closer to chassis center (front), rear of the car is stable. Higher value - engine moved to the rear, more oversteer, hard to control rear of the car."
 F9D60,DD3A8,115490,F365C,2,UInt16,33000,Chassis parameters Penske,Road course downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
 F9D64,DD3AC,115494,F3660,2,UInt16,28000,Chassis parameters Penske,Speedway downforce,"Lower value - less downforce and drag, higher value - more downforce and drag."
@@ -226,3 +226,67 @@ F95C8,,,,4,Int32,-2253,Collision dimensions,Rear-left vertical position,"Local c
 
 6D39D,,,,4,UInt32,36863,Cockpit view,**Cockpit dynamic roll damping,** Controls transient roll movement of the live cockpit camera from uneven left/right surface or wheel inputs. Lower values increase side-to-side roll shake; higher values reduce it. Does not affect the external car model.,
 6D494,,,,4,UInt32,36863,Cockpit view,**Cockpit dynamic pitch damping,** Controls transient pitch movement of the live cockpit camera over rough or uneven surfaces. Lower values increase fore/aft pitch shake; higher values reduce it. Does not affect the external car model.,
+
+70D19,,,,4,UInt32,835132529,Mirror rendering,**Left mirror view-angle offset,** Experimental binary-angle offset subtracted from the base viewing direction. Original 0x31C71C71 equals approximately 70 degrees. Normally change together with 70D55.,
+70D55,,,,4,UInt32,835132529,Mirror rendering,**Right mirror view-angle offset,** Experimental binary-angle offset added to the base viewing direction. Original 0x31C71C71 equals approximately 70 degrees. Normally change together with 70D19.,
+70DA9,,,,4,UInt32,48,Mirror rendering,**Low-resolution mirror render width,** Width copied for each mirror in 320x200 mode. Decreasing should be safe; increasing may read beyond the allocated mirror buffer.,
+70DAE,,,,4,UInt32,272,Mirror rendering,**Low-resolution right mirror X position,** Horizontal framebuffer destination of the right mirror rectangle in 320x200 mode. Original rectangle spans X 272 through 319.,
+70DB3,,,,4,UInt32,114,Mirror rendering,**Low-resolution mirror Y position,** Shared vertical framebuffer destination for both mirror rectangles in 320x200 mode.,
+70DFF,,,,4,UInt32,96,Mirror rendering,**High-resolution mirror render width,** Width copied for each mirror in 640x480 mode. Decreasing should be safe; increasing may read beyond the allocated mirror buffer.,
+70E04,,,,4,UInt32,544,Mirror rendering,**High-resolution right mirror X position,** Horizontal framebuffer destination of the right mirror rectangle in 640x480 mode. Original rectangle spans X 544 through 639.,
+70E09,,,,4,UInt32,288,Mirror rendering,**High-resolution mirror Y position,** Shared vertical framebuffer destination for both mirror rectangles in 640x480 mode.,
+
+678F3,,,,1,UInt8,90,Mirror rendering,**Left mirror visibility,** Use 90 to enable the left mirror or 89 to disable it. Only values 89 and 90 are valid.,
+
+85F15,,,,2,UInt16,900,Brake physics,**Base brake-torque gain,"** Scales the braking torque requested at the wheels. Stock is 900. Higher values make the brakes more aggressive and cause the tires to reach their longitudinal grip limit sooner, reducing available cornering grip and increasing the likelihood of wheel lockup. This does not increase tire grip and may not shorten stopping distance.",
+
+A0CB9,,,,1,UInt8,126,Cockpit view,**Use real wheel rotation at all speeds,"** High-speed wheel animation branch in the shared car update routine at Ghidra 00049864. Original 126 (0x7E, JLE) switches to a fixed 120-degree-per-update wheel rotation above the speed threshold. Set to 235 (0xEB, JMP) to bypass the high-speed shortcut and always calculate wheel rotation from actual car speed for player and opponent cars.",
+
+FD280,,,,4,UInt32,0,Track rendering,**Driving LOD slot 0,** Farthest section at one edge of the driving render window. 0=low detail 1=medium detail 2=high detail.
+FD284,,,,4,UInt32,0,Track rendering,**Driving LOD slot 1,**
+FD288,,,,4,UInt32,0,Track rendering,**Driving LOD slot 2,**
+FD28C,,,,4,UInt32,1,Track rendering,**Driving LOD slot 3,**
+FD290,,,,4,UInt32,1,Track rendering,**Driving LOD slot 4,**
+FD294,,,,4,UInt32,2,Track rendering,**Driving LOD slot 5,**
+FD298,,,,4,UInt32,2,Track rendering,**Driving LOD slot 6,**
+FD29C,,,,4,UInt32,2,Track rendering,**Driving LOD slot 7,**
+FD2A0,,,,4,UInt32,2,Track rendering,**Driving LOD slot 8 / center,** Current track section under the player.
+FD2A4,,,,4,UInt32,2,Track rendering,**Driving LOD slot 9,**
+FD2A8,,,,4,UInt32,2,Track rendering,**Driving LOD slot 10,**
+FD2AC,,,,4,UInt32,2,Track rendering,**Driving LOD slot 11,**
+FD2B0,,,,4,UInt32,1,Track rendering,**Driving LOD slot 12,**
+FD2B4,,,,4,UInt32,1,Track rendering,**Driving LOD slot 13,**
+FD2B8,,,,4,UInt32,0,Track rendering,**Driving LOD slot 14,**
+FD2BC,,,,4,UInt32,0,Track rendering,**Driving LOD slot 15,**
+FD2C0,,,,4,UInt32,0,Track rendering,**Driving LOD slot 16,** Farthest section at opposite edge of driving render window.
+
+8D46E,,,,4,Int32,-448,Track rendering,**Driving section window negative extent,** Signed byte displacement in the track-section record array. Stock -448 = -8 × 56 bytes. Must normally equal -(sections_each_side × 56).
+8D477,,,,4,UInt32,448,Track rendering,**Driving section window positive extent,** Positive byte displacement in the track-section record array. Stock 448 = 8 × 56 bytes. Must normally equal sections_each_side × 56.
+8D4C6,,,,4,UInt32,64,Track rendering,**Driving LOD reverse-table starting byte offset A,** Stock 64 = last LOD index 16 × 4 bytes. Must normally equal sections_each_side × 8.
+8D5F4,,,,4,UInt32,16,Track rendering,**Driving LOD last table index,** Stock 16 for a 17-entry table. Must normally equal sections_each_side × 2.
+8D5FD,,,,4,UInt32,64,Track rendering,**Driving LOD reverse-table starting byte offset B,** Second copy of the last-entry byte offset. Stock 64 = 16 × 4. Must match the other reverse-table offset.
+
+8D755,,,,4,UInt32,448,Track rendering - alternate view,**Branch 1 maximum section pointer distance,** Stock 448 = 8 × 56. Set to maximum sections × 56.
+8D765,,,,4,UInt32,8,Track rendering - alternate view,**Branch 1 maximum section count,** Maximum track sections drawn from current section.
+
+8D77B,,,,4,UInt32,5,Track rendering - alternate view,**Branch 1 medium-detail distance,** Medium-detail tier begins at section distance 5.
+8D799,,,,4,UInt32,3,Track rendering - alternate view,**Branch 1 high-detail distance,** High-detail tier extends through approximately 3 sections.
+
+8D837,,,,4,UInt32,8,Track rendering - alternate view,**Branch 2 side A maximum section count,**
+8D84D,,,,4,UInt32,5,Track rendering - alternate view,**Branch 2 side A medium-detail distance,**
+8D86B,,,,4,UInt32,3,Track rendering - alternate view,**Branch 2 side A high-detail distance,**
+
+8D898,,,,4,UInt32,8,Track rendering - alternate view,**Branch 2 side B maximum section count,**
+8D89E,,,,4,UInt32,448,Track rendering - alternate view,**Branch 2 side B maximum section pointer distance,** Stock 448 = 8 × 56.
+8D8B4,,,,4,UInt32,5,Track rendering - alternate view,**Branch 2 side B medium-detail distance,**
+8D8D2,,,,4,UInt32,3,Track rendering - alternate view,**Branch 2 side B high-detail distance,**
+
+8D964,,,,4,UInt32,8,Track rendering - alternate view,**Branch 3 maximum section count,**
+8D96A,,,,4,UInt32,448,Track rendering - alternate view,**Branch 3 maximum section pointer distance,** Stock 448 = 8 × 56.
+8D980,,,,4,UInt32,5,Track rendering - alternate view,**Branch 3 medium-detail distance,**
+8D99E,,,,4,UInt32,3,Track rendering - alternate view,**Branch 3 high-detail distance,**
+
+B20FD,,,,4,UInt32,600000,Track section selection,Current/cached section max DLAT,Maximum absolute DLAT from the cached/current section centerline before the game abandons that section and starts the broader section search. 600000 = 100 ft. Recommended to leave at 600000 initially.,
+B2179,,,,4,UInt32,600000,Track section selection,Global search early-accept DLAT,During the fallback/global section scan any candidate with absolute DLAT below this value is accepted immediately instead of continuing to look for a better match. 600000 = 100 ft. This is the suspected close-section teleport trigger.,
+
+A3AAE,,,,4,UInt32,7800000,Opponent graphics,**Live opponent longitudinal selection distance,** Maximum DLONG distance used when selecting opponent cars for the live driving render list. Original value is 7800000 track units, equivalent to 1300 feet at 6000 units per foot. Increasing this may allow cars on physically nearby but logically distant track sections to reach DYNO rendering.
