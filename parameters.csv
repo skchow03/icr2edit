@@ -286,7 +286,8 @@ FD2C0,,,,4,UInt32,0,Track rendering,**Driving LOD slot 16,** Farthest section at
 8D980,,,,4,UInt32,5,Track rendering - alternate view,**Branch 3 medium-detail distance,**
 8D99E,,,,4,UInt32,3,Track rendering - alternate view,**Branch 3 high-detail distance,**
 
-B20FD,,,,4,UInt32,600000,Track section selection,Current/cached section max DLAT,Maximum absolute DLAT from the cached/current section centerline before the game abandons that section and starts the broader section search. 600000 = 100 ft. Recommended to leave at 600000 initially.,
-B2179,,,,4,UInt32,600000,Track section selection,Global search early-accept DLAT,During the fallback/global section scan any candidate with absolute DLAT below this value is accepted immediately instead of continuing to look for a better match. 600000 = 100 ft. This is the suspected close-section teleport trigger.,
+DOS address,Windy address,Rendition address,Rendition DOS32A,Length,Data type,Default value,Category,**Description,**Comments
+B20FD,66CD7,,,4,UInt32,600000,Track section selection,**Current/cached section max DLAT,**Maximum absolute DLAT from the cached/current section centerline before the game abandons that section and starts the broader section search. 600000 = 100 ft. Recommended to leave at 600000 initially.,
+B2179,66D45,,,4,UInt32,600000,Track section selection,**Global search early-accept DLAT,**During the fallback/global section scan any candidate with absolute DLAT below this value is accepted immediately instead of continuing to look for a better match. 600000 = 100 ft. This is the suspected close-section teleport trigger.,
 
 A3AAE,,,,4,UInt32,7800000,Opponent graphics,**Live opponent longitudinal selection distance,** Maximum DLONG distance used when selecting opponent cars for the live driving render list. Original value is 7800000 track units, equivalent to 1300 feet at 6000 units per foot. Increasing this may allow cars on physically nearby but logically distant track sections to reach DYNO rendering.
