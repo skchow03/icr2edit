@@ -83,7 +83,25 @@ the plot uses the existing curve formula, not a calibrated dynamometer model.
 Sliders provide useful tuning ranges alongside precise numeric inputs. Fuel
 consumption and durability controls are included where their addresses are known.
 The **Advanced** tab retains the raw category table and all CSV parameters.
-Edits, imports, resets, and reverts synchronize across both tabs. Chassis and other
-graphical panels can use this model in future updates.
+Edits, imports, resets, and reverts synchronize across the friendly and Advanced tabs.
+Additional graphical panels can use this model in future updates.
 
 Run checks with `python -m unittest discover` and `python -m compileall -q .`.
+
+### Engine defaults and Chassis tab
+
+**Engine → Reset to defaults** restores all available fields shown by that tab for
+Ford, Mercedes, and Honda, including fuel consumption and durability. It preserves
+other staged changes and does not write to the EXE until Save.
+
+**Chassis** provides Lola/Penske/Reynard selection and Road course/Speedway settings.
+The settings selector chooses which stored aero preset to edit; switching does not
+modify values or change the game track type. Base weight and body downforce rear
+distribution are shared across both presets. Sliders and numeric controls edit body
+drag, downforce-to-drag ratio, rear percentage, and base weight. Advanced remains last
+and stays synchronized with these controls.
+
+The car diagram is schematic and shows body downforce distribution. The aero bars
+estimate relative body drag and downforce against that chassis/preset's CSV defaults
+at the same speed, based on the documented coefficient relationship. They exclude
+wings and tire grip. Weight remains in game units; no pounds conversion is asserted.
