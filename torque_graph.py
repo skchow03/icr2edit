@@ -2,7 +2,7 @@
 import sys
 import numpy as np
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel,
-    QSpinBox, QDoubleSpinBox, QComboBox, QFormLayout, QSlider, QHBoxLayout)
+    QSpinBox, QDoubleSpinBox, QComboBox, QFormLayout, QSlider, QHBoxLayout, QPushButton)
 from PyQt5.QtCore import Qt, QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -33,7 +33,13 @@ class TorqueGraphApp(QWidget):
         self.resize(900, 650)
         layout = QVBoxLayout(self)
         self.engine = QComboBox()
-        layout.addWidget(self.engine)
+        selection = QHBoxLayout()
+        selection.addWidget(self.engine)
+        self.reset_button = QPushButton("Reset to defaults")
+        self.reset_button.setToolTip("Reset all available parameters in this tab for Ford, Mercedes, and Honda. Changes are staged until Save.")
+        self.reset_button.clicked.connect(self.reset_defaults)
+        selection.addWidget(self.reset_button)
+        layout.addLayout(selection)
         form = QFormLayout()
         self.inputs = {}
         for field, label in self.FIELDS:
@@ -85,6 +91,15 @@ class TorqueGraphApp(QWidget):
                 self.inputs[field].blockSignals(False)
         self.refresh()
 
+    def reset_defaults(self):
+        if self.model is None:
+            return
+        ids = [f"engine.{engine}.{field}" for engine in ("ford", "mercedes", "honda")
+               for field, _ in self.FIELDS
+               if f"engine.{engine}.{field}" in self.model.parameters]
+        self.model.reset_defaults(ids)
+        self.refresh()
+
     def edit_slider(self, field, position):
         maximum, scale = self.slider_ranges[field]
         value = round(position * maximum / 1000 / scale) * scale
@@ -107,6 +122,7 @@ class TorqueGraphApp(QWidget):
     def refresh(self, *_):
         available = self.engine.count() > 0
         self.engine.setEnabled(available)
+        self.reset_button.setEnabled(available and self.model is not None)
         for field, control in self.inputs.items():
             pid = self.parameter_id(field)
             supported = available and (self.model is None or pid in self.model.parameters)

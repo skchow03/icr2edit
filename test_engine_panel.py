@@ -53,7 +53,7 @@ class EnginePanelTests(unittest.TestCase):
         tree = ast.parse((root / 'torque_graph.py').read_text())
         cls = next(n for n in tree.body if isinstance(n, ast.ClassDef))
         methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and
-                   n.name in {'parameter_id', 'edit_value', 'edit_slider', 'refresh', 'on_model_change'}]
+                   n.name in {'parameter_id', 'edit_value', 'edit_slider', 'refresh', 'on_model_change', 'reset_defaults'}]
         scope = {}
         exec(compile(ast.Module(body=methods, type_ignores=[]), 'engine bindings', 'exec'), scope)
         Panel = type('Panel', (), {k: v for k, v in scope.items() if callable(v)})
@@ -67,6 +67,8 @@ class EnginePanelTests(unittest.TestCase):
         panel.model.load(params, {p['Parameter ID']: int(p['Default value']) for p in params})
         self.name = 'Ford'
         panel.engine = SimpleNamespace(currentText=lambda: self.name, count=lambda: 3, setEnabled=lambda _: None)
+        panel.FIELDS = [(f, f) for f in fields]
+        panel.reset_button = Control()
         panel.inputs = {f: Control() for f in fields}
         panel.sliders = {f: Control() for f in fields}
         panel.slider_ranges = {}
@@ -79,6 +81,20 @@ class EnginePanelTests(unittest.TestCase):
             panel.sliders[f].callback = lambda value, field=f: panel.edit_slider(field, value)
         panel.model.subscribe(panel.on_model_change)
         panel.refresh()
+
+    def test_reset_restores_all_engines_and_preserves_other_edits(self):
+        panel = self.panel
+        extra = {'Parameter ID': 'other.value', 'Data type': 'UInt16', 'Length': '2', 'Default value': '10'}
+        panel.model.parameters['other.value'] = extra
+        panel.model.values['other.value'] = panel.model.original['other.value'] = 10
+        panel.model.set_value('other.value', 20)
+        panel.model.set_value('engine.ford.torque_coefficient_1', 1500)
+        panel.model.set_value('engine.honda.rpm_limit', 7000)
+        panel.reset_defaults()
+        self.assertEqual(panel.model.get_value('engine.ford.torque_coefficient_1'), 1290)
+        self.assertEqual(panel.model.get_value('engine.honda.rpm_limit'), 6750)
+        self.assertEqual(panel.model.get_value('other.value'), 20)
+        self.assertEqual(panel.inputs['torque_coefficient_1'].value(), 1290)
 
     def test_slider_edit_updates_shared_model(self):
         panel = self.panel

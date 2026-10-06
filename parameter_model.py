@@ -58,6 +58,14 @@ class ParameterModel:
             self.values[parameter_id] = value
             self._notify(parameter_id)
 
+    def reset_defaults(self, parameter_ids):
+        """Stage CSV defaults for an explicit group without touching other edits."""
+        for pid in parameter_ids:
+            param = self.parameters[pid]
+            raw = param["Default value"]
+            value = float(raw) if param.get("Data type", "").lower() in {"16.16", "fixed16.16", "fixed16_16"} else int(raw)
+            self.set_value(pid, value)
+
     def values_for(self, parameters):
         return {p["Parameter ID"]: self.values[p["Parameter ID"]] for p in parameters}
 

@@ -8,6 +8,7 @@ import subprocess
 from fixed_point import VALUE_MAX, VALUE_MIN, pack_fixed_16_16, unpack_fixed_16_16
 from torque_graph import TorqueGraphApp
 from parameter_model import ParameterModel
+from chassis_panel import ChassisPanel
 
 # PyQt5 for GUI
 from PyQt5 import QtWidgets, QtCore
@@ -500,6 +501,8 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self.setCentralWidget(self.tabs)
         self.engine_panel = TorqueGraphApp(self.model)
         self.tabs.addTab(self.engine_panel, "Engine")
+        self.chassis_panel = ChassisPanel(self.model)
+        self.tabs.addTab(self.chassis_panel, "Chassis")
         advanced = QtWidgets.QWidget()
         self.tabs.addTab(advanced, "Advanced")
         layout = QtWidgets.QHBoxLayout(advanced)
@@ -721,6 +724,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
         self.model.load(available, loaded_values)
         self.engine_panel.reload_engines()
+        self.chassis_panel.reload_chassis()
         self.current_category = None
         # UI update
         self.category_list.clear()
