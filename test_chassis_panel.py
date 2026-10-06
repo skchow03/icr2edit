@@ -25,7 +25,7 @@ class ChassisTests(unittest.TestCase):
         tree = ast.parse((root / 'chassis_panel.py').read_text())
         cls = next(n for n in tree.body if isinstance(n, ast.ClassDef))
         methods = [n for n in cls.body if isinstance(n, ast.FunctionDef) and
-                   n.name in {'parameter_id', 'edit_value', 'edit_slider'}]
+                   n.name in {'parameter_id', 'edit_value', 'edit_slider', 'reset_defaults'}]
         scope = {}
         exec(compile(ast.Module(body=methods, type_ignores=[]), 'chassis bindings', 'exec'), scope)
         Panel = type('Panel', (), {k: v for k, v in scope.items() if callable(v)})
@@ -42,6 +42,23 @@ class ChassisTests(unittest.TestCase):
         panel.chassis = SimpleNamespace(currentText=lambda: self.name)
         panel.refresh = MagicMock()
         panel.slider_max = {'drag': 65535, 'rear': 65535}
+
+    def test_reset_all_chassis_and_presets_preserves_unrelated_edits(self):
+        model = self.panel.model
+        other = {'Parameter ID': 'engine.test', 'Length': '2', 'Data type': 'UInt16', 'Default value': '100'}
+        model.parameters['engine.test'] = other
+        model.values['engine.test'] = model.original['engine.test'] = 100
+        model.set_value('engine.test', 200)
+        for pid in list(model.parameters):
+            if pid.startswith('chassis.'):
+                model.set_value(pid, 123)
+        self.panel.reset_defaults()
+        for pid, param in model.parameters.items():
+            if pid.startswith('chassis.'):
+                self.assertEqual(model.get_value(pid), int(param['Default value']))
+        self.assertEqual(model.get_value('engine.test'), 200)
+        self.assertEqual(model.dirty, {'engine.test'})
+        self.panel.refresh.assert_called()
 
     def test_mode_routes_edits_without_overwriting_other_preset(self):
         panel = self.panel
