@@ -102,6 +102,31 @@ class ParameterModelTests(unittest.TestCase):
                 self.assertEqual(helper['load_initial_values']([param], f.name, version)[param['Parameter ID']], 1400)
             self.assertEqual(Path(f.name).read_bytes()[:4], b'\0' * 4)
 
+    def test_actual_csv_column_mapping(self):
+        helper = binary_helpers()
+        groups = helper['load_parameters_by_category'](ROOT / 'parameters.csv')
+        ford = {p['Parameter ID']: p for p in groups['Engine parameters Ford']}
+        coefficient = ford['engine.ford.torque_coefficient_1']
+        self.assertEqual(coefficient['DOS address'], 'F9CE4')
+        self.assertEqual(coefficient['Windy address'], 'DD32C')
+        self.assertEqual(coefficient['Rendition address'], '115414')
+        self.assertEqual(coefficient['Length'], '2')
+        self.assertEqual(coefficient['Data type'], 'UInt16')
+        self.assertEqual(coefficient['Default value'], '1290')
+        self.assertEqual(coefficient['Description'], 'Torque coefficient 1')
+
+    def test_missing_column_and_shifted_type_rejected(self):
+        helper = binary_helpers()
+        source = (ROOT / 'parameters.csv').read_text()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'bad.csv'
+            path.write_text(source.replace('DOS address,Windy address,', 'DOS address,', 1))
+            with self.assertRaisesRegex(ValueError, 'missing columns'):
+                helper['load_parameters_by_category'](path)
+            path.write_text(source.replace(',2,UInt16,6290,', ',2,2,6290,', 1))
+            with self.assertRaisesRegex(ValueError, 'Invalid data type'):
+                helper['load_parameters_by_category'](path)
+
     def test_actual_csv_unique_ids_and_engine_bindings(self):
         helper = binary_helpers()
         groups = helper['load_parameters_by_category'](ROOT / 'parameters.csv')
