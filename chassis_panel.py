@@ -1,6 +1,6 @@
 """Friendly chassis controls and body-aero visualizations sharing the editor model."""
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QFormLayout,
-                             QComboBox, QDoubleSpinBox, QSlider, QLabel)
+                             QComboBox, QDoubleSpinBox, QSlider, QLabel, QPushButton)
 from PyQt5.QtCore import Qt, QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -29,6 +29,10 @@ class ChassisPanel(QWidget):
         self.mode.addItem('Road course', 'road_course')
         self.mode.addItem('Speedway', 'speedway')
         selectors.addWidget(self.mode)
+        self.reset_button = QPushButton("Reset to defaults")
+        self.reset_button.setToolTip("Reset Lola, Penske, and Reynard, including both road-course and speedway settings. Changes are staged until Save.")
+        self.reset_button.clicked.connect(self.reset_defaults)
+        selectors.addWidget(self.reset_button)
         layout.addLayout(selectors)
         self.inputs, self.sliders, self.slider_max = {}, {}, {}
         form = QFormLayout()
@@ -90,6 +94,15 @@ class ChassisPanel(QWidget):
         self.chassis.blockSignals(False)
         self.refresh()
 
+    def reset_defaults(self):
+        fields = ('base_chassis_weight', 'body_downforce_rear_distribution',
+                  'road_course_body_drag_coefficient', 'speedway_body_drag_coefficient',
+                  'road_course_body_downforce_to_drag_ratio', 'speedway_body_downforce_to_drag_ratio')
+        ids = [f"chassis.{chassis}.{field}" for chassis in ("lola", "penske", "reynard")
+               for field in fields if f"chassis.{chassis}.{field}" in self.model.parameters]
+        self.model.reset_defaults(ids)
+        self.refresh()
+
     def edit_value(self, field, value):
         scale = next(scale for f, _, scale, _ in self.FIELDS if f == field)
         self.model.set_value(self.parameter_id(field), min(65535, max(0, round(value * scale))))
@@ -108,6 +121,7 @@ class ChassisPanel(QWidget):
         available = self.chassis.count() > 0
         self.chassis.setEnabled(available)
         self.mode.setEnabled(available)
+        self.reset_button.setEnabled(available)
         for field, _, scale, _ in self.FIELDS:
             control, slider = self.inputs[field], self.sliders[field]
             control.setEnabled(available)
