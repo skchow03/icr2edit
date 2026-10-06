@@ -7,6 +7,7 @@ import json
 import subprocess
 from fixed_point import VALUE_MAX, VALUE_MIN, pack_fixed_16_16, unpack_fixed_16_16
 from torque_graph import TorqueGraphApp
+from parameter_model import ParameterModel
 
 # PyQt5 for GUI
 from PyQt5 import QtWidgets, QtCore
@@ -80,12 +81,17 @@ def identify_icr2_version(file_path):
 def load_parameters_by_category(file_path):
     """Load and group parameter rows from parameters.csv by category."""
     parameters_by_category = {}
+    seen = set()
     with open(file_path, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            category = row["Category"].strip()
-            if not category:
+            category = (row.get("Category") or "").strip()
+            if not category or row.get("DOS address") == "DOS address":
                 continue
+            parameter_id = row.get("Parameter ID", "").strip()
+            if not parameter_id or parameter_id in seen:
+                raise ValueError(f"Missing or duplicate Parameter ID: {parameter_id!r}")
+            seen.add(parameter_id)
             parameters_by_category.setdefault(category, []).append(row)
     return parameters_by_category
 
@@ -158,7 +164,7 @@ def load_initial_values(parameters, exe_path, version):
         length = int(param["Length"]) if param["Length"].isdigit() else 4
         data_type = param.get("Data type", "")
         val = read_value_from_exe(exe_path, address, length, data_type)
-        current_values[i] = val
+        current_values[param["Parameter ID"]] = val
     return current_values
 
 # ---- GUI Dialog for Editing a Single Parameter ----
@@ -213,6 +219,8 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self.resize(800, 600)
 
         # State
+        self.model = ParameterModel()
+        self.model.subscribe(self.on_model_change)
         self.exe_path = None
         self.version = None
         self.parameters_by_category = {}
@@ -224,6 +232,8 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self.status = self.statusBar()
         self.status.showMessage("No EXE loaded")
         self._create_widgets()
+        self.param_table.currentCellChanged.connect(self.on_param_select)
+        self.param_table.itemChanged.connect(self.on_checkbox_change)
         self.show_about()
 
 
@@ -255,6 +265,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         if reply != QtWidgets.QMessageBox.Yes:
             return
 
+        self.model.revert()
         self.unsaved_changes.clear()
         self.category_list.clear()
         self.category_list.addItems(self.parameters_by_category.keys())
@@ -318,12 +329,6 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         for category, selected_rows in reset_targets.items():
             raw_params = self.parameters_by_category.get(category, [])
             valid_params = filter_parameters(raw_params, self.version)
-            existing_changes = self.unsaved_changes.get(category)
-            if existing_changes:
-                values = existing_changes[1].copy()
-            else:
-                values = load_initial_values(valid_params, self.exe_path, self.version)
-
             rows = range(len(valid_params)) if selected_rows is None else selected_rows
             category_reset_count = 0
             for row in rows:
@@ -331,15 +336,14 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                     continue
                 try:
                     param = valid_params[row]
-                    values[row] = parse_parameter_value(
+                    self.model.set_value(param["Parameter ID"], parse_parameter_value(
                         param["Default value"].strip(), param.get("Data type", "")
-                    )
+                    ))
                 except (KeyError, TypeError, ValueError):
                     continue
                 category_reset_count += 1
 
             if category_reset_count:
-                self.unsaved_changes[category] = (valid_params, values)
                 reset_count += category_reset_count
 
         if hasattr(self, "current_category") and self.current_category in self.unsaved_changes:
@@ -531,12 +535,35 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
         layout.addLayout(right_panel, 3)
 
+    def on_model_change(self, parameter_id):
+        param = self.model.parameters[parameter_id]
+        category = param["Category"]
+        params = filter_parameters(self.parameters_by_category[category], self.version)
+        if any(p["Parameter ID"] in self.model.dirty for p in params):
+            self.unsaved_changes[category] = (params, self.model.values_for(params))
+        else:
+            self.unsaved_changes.pop(category, None)
+        if getattr(self, "current_category", None) == category:
+            self.current_values = self.model.values_for(params)
+            for row, p in enumerate(params):
+                if p["Parameter ID"] == parameter_id:
+                    widget = self.param_table.cellWidget(row, 2)
+                    if widget is not None:
+                        widget.blockSignals(True)
+                        widget.setValue(self.model.get_value(parameter_id))
+                        widget.setStyleSheet("background-color: yellow;" if parameter_id in self.model.dirty else "")
+                        widget.blockSignals(False)
+        self.update_status()
+        self.update_category_list_styles()
+
     def launch_torque_visualizer(self):
-        """Launch the torque graph in-process as a window."""
-        self.torque_window = TorqueGraphApp()
+        if not self.exe_path:
+            QtWidgets.QMessageBox.information(self, "No EXE", "Open an EXE first.")
+            return
+        if getattr(self, "torque_window", None) is not None:
+            self.torque_window.close()
+        self.torque_window = TorqueGraphApp(self.model)
         self.torque_window.show()
-
-
 
     def import_parameter_values(self):
         """Import parameter values from a CSV file and apply them in-memory across all categories (no EXE write)."""
@@ -561,7 +588,11 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         # Map import keys to value strings. Parsing happens after matching so the
         # parameter's data type can distinguish integers from 16.16 decimals.
         imported_map = {}
+        imported_ids = {}
         for row in imported:
+            if row.get("Parameter ID", "").strip():
+                imported_ids[row["Parameter ID"].strip()] = row.get("Value", "").strip()
+                continue
             key = (
                 row.get("DOS address", "").strip().upper(),
                 row.get("Windy address", "").strip().upper(),
@@ -570,7 +601,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
             )
             imported_map[key] = row.get("Value", "").strip()
 
-        if not imported_map:
+        if not imported_map and not imported_ids:
             QtWidgets.QMessageBox.information(self, "Import", "No valid entries found in file.")
             return
 
@@ -579,7 +610,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         # Iterate through all categories and apply matches
         for category, param_list in self.parameters_by_category.items():
             valid_params = filter_parameters(param_list, self.version)
-            current_vals = load_initial_values(valid_params, self.exe_path, self.version)
+            current_vals = self.model.values_for(valid_params)
             changed_this_category = False
 
             for i, param in enumerate(valid_params):
@@ -589,28 +620,19 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                     param.get("Rendition address", "").strip().upper(),
                     param.get("Length", "").strip(),
                 )
-                if key in imported_map:
+                pid = param["Parameter ID"]
+                if pid in imported_ids or key in imported_map:
                     try:
                         value = parse_parameter_value(
-                            imported_map[key], param.get("Data type", "")
+                            imported_ids[pid] if pid in imported_ids else imported_map[key], param.get("Data type", "")
                         )
+                        self.model.set_value(pid, value)
                     except ValueError:
                         continue
-                    current_vals[i] = value
+                    current_vals[pid] = self.model.get_value(pid)
                     changed_this_category = True
                     total_updated += 1
 
-                    # If this is the currently visible category, update UI
-                    if category == self.current_category:
-                        widget = self.param_table.cellWidget(i, 2)
-                        if isinstance(widget, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox)):
-                            widget.setValue(value)
-                            widget.setStyleSheet("background-color: yellow;")
-
-            if changed_this_category:
-                self.unsaved_changes[category] = (valid_params, current_vals.copy())
-                if category == self.current_category:
-                    self.current_values = current_vals
 
         self.update_status()
         self.update_category_list_styles()
@@ -633,7 +655,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         if not save_path:
             return
 
-        fieldnames = ["DOS address", "Windy address", "Rendition address", "Length", "Value"]
+        fieldnames = ["Parameter ID", "DOS address", "Windy address", "Rendition address", "Length", "Value"]
         with open(save_path, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -645,14 +667,15 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                     continue
                 raw_params = self.parameters_by_category.get(category, [])
                 valid_params = filter_parameters(raw_params, self.version)
-                current_vals = self.unsaved_changes.get(category, (None, None))[1] or load_initial_values(valid_params, self.exe_path, self.version)
+                current_vals = self.model.values_for(valid_params)
 
                 for i in selected_rows:
                     if i >= len(valid_params):
                         continue
                     param = valid_params[i]
-                    value = current_vals.get(i, 0)
+                    value = self.model.get_value(param["Parameter ID"])
                     writer.writerow({
+                        "Parameter ID": param["Parameter ID"],
                         "DOS address": param.get("DOS address", "").strip(),
                         "Windy address": param.get("Windy address", "").strip(),
                         "Rendition address": param.get("Rendition address", "").strip(),
@@ -678,8 +701,14 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
         try:
             params_by_cat = load_parameters_by_category("parameters.csv")
-        except FileNotFoundError:
-            QtWidgets.QMessageBox.critical(self, "Error", "parameters.csv not found")
+        except (FileNotFoundError, ValueError) as exc:
+            QtWidgets.QMessageBox.critical(self, "Error", str(exc))
+            return
+
+        available = [p for ps in params_by_cat.values() for p in filter_parameters(ps, version)]
+        loaded_values = load_initial_values(available, path, version)
+        if any(value is None for value in loaded_values.values()):
+            QtWidgets.QMessageBox.critical(self, "Error", "Some parameters could not be read from this EXE.")
             return
 
         # Save state
@@ -690,6 +719,10 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self.unsaved_changes.clear()
         self.checked_parameters.clear()
 
+        if getattr(self, "torque_window", None) is not None:
+            self.torque_window.close()
+        self.model.load(available, loaded_values)
+        self.current_category = None
         # UI update
         self.category_list.clear()
         self.category_list.addItems(self.parameters_by_category.keys())
@@ -704,23 +737,23 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         category = self.category_list.item(index).text()
         raw_params = self.parameters_by_category[category]
         valid_params = filter_parameters(raw_params, self.version)
-        current_vals = self.unsaved_changes.get(category, (None, None))[1] or load_initial_values(valid_params, self.exe_path, self.version)
+        current_vals = self.model.values_for(valid_params)
         self.current_values = current_vals
         self.current_params = valid_params
         self.current_category = category
         self.populate_params()
 
     def populate_params(self):
+        self.param_table.blockSignals(True)
         self.param_table.setRowCount(len(self.current_params))
         checked_rows = self.checked_parameters.get(self.current_category, set())
 
-        original_values = load_initial_values(self.current_params, self.exe_path, self.version)
 
         for i, param in enumerate(self.current_params):
             desc = param["Description"]
             default = param["Default value"]
-            cur_val = self.current_values.get(i, 0)
-            orig_val = load_initial_values(self.current_params, self.exe_path, self.version).get(i, 0)
+            cur_val = self.model.get_value(param["Parameter ID"])
+            orig_val = self.model.original[param["Parameter ID"]]
 
             # Checkbox column (col 0)
             checkbox_item = QtWidgets.QTableWidgetItem()
@@ -731,6 +764,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
             # Description column (col 1)
             item_desc = QtWidgets.QTableWidgetItem(desc)
+            item_desc.setToolTip(param["Parameter ID"])
             item_desc.setFlags(QtCore.Qt.ItemIsEnabled)
             self.param_table.setItem(i, 1, item_desc)
 
@@ -750,29 +784,25 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 spinbox = QtWidgets.QDoubleSpinBox()
                 spinbox.setDecimals(5)
                 spinbox.setSingleStep(1 / 65536)
+            elif data_type == "UInt32":
+                min_val, max_val = type_bounds[data_type]
+                spinbox = QtWidgets.QDoubleSpinBox()
+                spinbox.setDecimals(0)
+                spinbox.setSingleStep(1)
             else:
                 min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
                 spinbox = QtWidgets.QSpinBox()
                 spinbox.setSingleStep(1)
             spinbox.setMinimum(min_val)
-            spinbox.setMaximum(min(max_val, 2147483647))
+            spinbox.setMaximum(max_val)
             spinbox.setValue(cur_val)
             spinbox.setAccelerated(True)
 
             if cur_val != orig_val:
                 spinbox.setStyleSheet("background-color: yellow;")
 
-            def on_change(val, row=i):
-                sender = self.sender()
-                if isinstance(sender, (QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox)):
-                    sender.setStyleSheet("background-color: yellow;")
-                self.current_values[row] = val
-                self.unsaved_changes[self.current_category] = (
-                    self.current_params,
-                    self.current_values.copy(),
-                )
-                self.update_status()
-                self.update_category_list_styles()
+            def on_change(val, pid=param["Parameter ID"]):
+                self.model.set_value(pid, val)
 
             spinbox.valueChanged.connect(on_change)
             self.param_table.setCellWidget(i, 2, spinbox)
@@ -785,10 +815,9 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
 
         self.param_table.setCurrentCell(0, 0)  # select first row by default
-        self.param_table.currentCellChanged.connect(self.on_param_select)
+        self.param_table.blockSignals(False)
         self.on_param_select(0, 0)  # trigger update to comment box
 
-        self.param_table.itemChanged.connect(self.on_checkbox_change)
 
     def on_checkbox_change(self, item):
         """Track changes to checkboxes and store them per category."""
@@ -815,40 +844,19 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
 
     def on_double_click(self, index):
-        """Edit the selected parameter with a slider/input dialog."""
-        row = index.row()
-        if row < 0:
-            return
-        param = self.current_params[row]
-        cur_val = self.current_values.get(row, "N/A")
-        data_type = param.get("Data type", "").strip()
-        type_bounds = {"UInt8": (0, 0xFF), "UInt16": (0, 0xFFFF), "UInt32": (0, 0xFFFFFFFF)}
-        min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
-
-        dlg = ParameterEditDialog(param["Description"], int(cur_val), min_val, max_val, self)
-        if dlg.exec_() != QtWidgets.QDialog.Accepted:
-            return
-
-        new_val = dlg.value
-        if not (min_val <= new_val <= max_val):
-            QtWidgets.QMessageBox.critical(self, "Error", f"Value out of range for {data_type}")
-            return
-
-        # Save value and mark as changed
-        self.current_values[row] = new_val
-        self.param_table.item(row, 1).setText(str(new_val))
-        self.param_table.item(row, 1).setBackground(QtCore.Qt.yellow)
-        self.unsaved_changes[self.current_category] = (self.current_params, self.current_values.copy())
-        self.update_status()
-        self.update_category_list_styles()
+        widget = self.param_table.cellWidget(index.row(), 2)
+        if widget is not None:
+            widget.setFocus()
+            widget.selectAll()
 
     def save_all(self):
         """Save all modified values back to EXE."""
         if not self.unsaved_changes:
             QtWidgets.QMessageBox.information(self, "Info", "No changes to save")
             return
-        for cat, (params, values) in self.unsaved_changes.items():
+        for cat, (params, values) in list(self.unsaved_changes.items()):
             self.save_changes(params, values)
+        self.model.mark_saved()
         self.unsaved_changes.clear()
         self.update_status()
         self.update_category_list_styles()
@@ -858,12 +866,13 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         """Write parameter values to the EXE file."""
         address_key = ADDRESS_KEYS[self.version]
         for i, param in enumerate(params):
-            if i not in values:
+            pid = param["Parameter ID"]
+            if pid not in self.model.dirty:
                 continue
             address = param[address_key].strip()
             length = int(param["Length"]) if param["Length"].isdigit() else 4
             data_type = param.get("Data type", "")
-            write_value_to_exe(self.exe_path, address, length, values[i], data_type)
+            write_value_to_exe(self.exe_path, address, length, self.model.get_value(pid), data_type)
 
 
 # ---- Application Entry Point ----
@@ -877,3 +886,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

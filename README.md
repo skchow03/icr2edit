@@ -58,3 +58,28 @@ MIT License
 ## Credits
 
 Created by SK Chow. This is a fan-made tool and is not affiliated with the original developers.
+
+
+### Stable parameter IDs and shared editor state
+
+`parameters.csv` now has a required `Parameter ID` column. IDs are permanent:
+keep an existing ID when changing a label, category, address, or row order.
+New parameters need new unique IDs. Separate binary occurrences have separate
+IDs (including `.occurrence_2` suffixes); future linked controls should explicitly
+list the IDs they update. An ID does not certify the interpretation of a parameter.
+
+`ParameterModel` owns executable values, staged changes, binary type validation,
+and change notifications. Views use `get_value(id)` and `set_value(id, value)`;
+subscribe/unsubscribe for live updates. Missing executable-version addresses are
+excluded from the model. Changes are written only with the editor's Save action.
+Imports prefer `Parameter ID`; older address-and-length CSV exports remain supported.
+Unknown IDs do not fall back to potentially unrelated binary locations.
+
+Open an EXE, then choose **Tools → Launch Torque Curve Visualizer**. Select Ford,
+Mercedes, or Honda to edit the same staged values as the parameter table. Curves
+update live and compare against that engine's stock defaults. RPM controls display
+in-game RPM (twice the stored value). Torque remains in arbitrary simulation units;
+the plot uses the existing curve formula, not a calibrated dynamometer model.
+Chassis and other graphical panels can use this model in future updates.
+
+Run checks with `python -m unittest discover` and `python -m compileall -q .`.
