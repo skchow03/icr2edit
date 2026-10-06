@@ -1,4 +1,4 @@
-Parameter ID,DOS address,Rendition address,Rendition DOS32A,Length,Data type,Default value,Category,Description,Comments,,,,,,,,,,
+Parameter ID,DOS address,Windy address,Rendition address,Rendition DOS32A,Length,Data type,Default value,Category,Description,Comments,,,,,,,,,,
 engine.ford.fuel_consumption_rate,F9CD8,DD320,115408,F35D4,2,UInt16,6290,Engine parameters Ford,Fuel consumption rate,Lower = less fuel used ,,,,,,,,,,
 engine.ford.rpm_upshift_point,F9CDC,DD324,11540C,F35D8,2,UInt16,6500,Engine parameters Ford,RPM upshift point,Used for autoshift/red light (multiply value here by 2),,,,,,,,,,
 engine.ford.rpm_downshift_point,F9CE0,DD328,115410,F35DC,2,UInt16,3900,Engine parameters Ford,RPM downshift point,Used for autoshift/red light (multiply value here by 2),,,,,,,,,,

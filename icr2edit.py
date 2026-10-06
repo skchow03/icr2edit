@@ -84,6 +84,11 @@ def load_parameters_by_category(file_path):
     seen = set()
     with open(file_path, newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
+        required = {"Parameter ID", "DOS address", "Windy address", "Rendition address",
+                    "Rendition DOS32A", "Length", "Data type", "Default value", "Category", "Description"}
+        missing = required - set(reader.fieldnames or [])
+        if missing:
+            raise ValueError("parameters.csv is missing columns: " + ", ".join(sorted(missing)))
         for row in reader:
             category = (row.get("Category") or "").strip()
             if not category or row.get("DOS address") == "DOS address":
@@ -91,6 +96,12 @@ def load_parameters_by_category(file_path):
             parameter_id = row.get("Parameter ID", "").strip()
             if not parameter_id or parameter_id in seen:
                 raise ValueError(f"Missing or duplicate Parameter ID: {parameter_id!r}")
+            data_type = (row.get("Data type") or "").strip()
+            integer_lengths = {"UInt8": "1", "Int8": "1", "UInt16": "2", "Int16": "2",
+                               "UInt32": "4", "Int32": "4"}
+            expected_length = "4" if is_fixed_16_16(data_type) else integer_lengths.get(data_type)
+            if expected_length is None or (row.get("Length") or "").strip() != expected_length:
+                raise ValueError(f"Invalid data type or length for {parameter_id}: {data_type!r}")
             seen.add(parameter_id)
             parameters_by_category.setdefault(category, []).append(row)
     return parameters_by_category
@@ -790,7 +801,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                 spinbox.setDecimals(0)
                 spinbox.setSingleStep(1)
             else:
-                min_val, max_val = type_bounds.get(data_type, (0, 0xFFFFFFFF))
+                min_val, max_val = type_bounds[data_type]
                 spinbox = QtWidgets.QSpinBox()
                 spinbox.setSingleStep(1)
             spinbox.setMinimum(min_val)
