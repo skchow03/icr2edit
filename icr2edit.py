@@ -227,7 +227,7 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         super().__init__()
         self.setWindowTitle("ICR2Edit v0.5.2")
         self.setWindowIcon(QIcon(resource_path("icon.ico")))
-        self.resize(800, 600)
+        self.resize(1100, 760)
 
         # State
         self.model = ParameterModel()
@@ -490,20 +490,19 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         tools_menu.addAction(reset_selected_action)
         tools_menu.addSeparator()
 
-        # Torque graph launcher
-        torque_action = QtWidgets.QAction("Launch Torque Curve Visualizer", self)
-        torque_action.triggered.connect(self.launch_torque_visualizer)
-        tools_menu.addAction(torque_action)
-
         help_menu = self.menuBar().addMenu("&Help")
         help_menu.addAction(about_action)
 
 
 
-        # Main layout
-        central_widget = QtWidgets.QWidget()
-        self.setCentralWidget(central_widget)
-        layout = QtWidgets.QHBoxLayout(central_widget)
+        # Friendly editors first; the raw parameter editor is always last.
+        self.tabs = QtWidgets.QTabWidget()
+        self.setCentralWidget(self.tabs)
+        self.engine_panel = TorqueGraphApp(self.model)
+        self.tabs.addTab(self.engine_panel, "Engine")
+        advanced = QtWidgets.QWidget()
+        self.tabs.addTab(advanced, "Advanced")
+        layout = QtWidgets.QHBoxLayout(advanced)
 
         # Category list
         self.category_list = QtWidgets.QListWidget()
@@ -532,7 +531,6 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
 
 
         #self.param_table.doubleClicked.connect(self.on_double_click)
-        layout.addWidget(self.param_table, 3)
 
         # Comment box (below table)
         right_panel = QtWidgets.QVBoxLayout()
@@ -566,15 +564,6 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
                         widget.blockSignals(False)
         self.update_status()
         self.update_category_list_styles()
-
-    def launch_torque_visualizer(self):
-        if not self.exe_path:
-            QtWidgets.QMessageBox.information(self, "No EXE", "Open an EXE first.")
-            return
-        if getattr(self, "torque_window", None) is not None:
-            self.torque_window.close()
-        self.torque_window = TorqueGraphApp(self.model)
-        self.torque_window.show()
 
     def import_parameter_values(self):
         """Import parameter values from a CSV file and apply them in-memory across all categories (no EXE write)."""
@@ -730,9 +719,8 @@ class PhysicsEditorGUI(QtWidgets.QMainWindow):
         self.unsaved_changes.clear()
         self.checked_parameters.clear()
 
-        if getattr(self, "torque_window", None) is not None:
-            self.torque_window.close()
         self.model.load(available, loaded_values)
+        self.engine_panel.reload_engines()
         self.current_category = None
         # UI update
         self.category_list.clear()
