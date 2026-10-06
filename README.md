@@ -75,11 +75,15 @@ excluded from the model. Changes are written only with the editor's Save action.
 Imports prefer `Parameter ID`; older address-and-length CSV exports remain supported.
 Unknown IDs do not fall back to potentially unrelated binary locations.
 
-Open an EXE, then choose **Tools → Launch Torque Curve Visualizer**. Select Ford,
+Open an EXE, then select the **Engine** tab. Select Ford,
 Mercedes, or Honda to edit the same staged values as the parameter table. Curves
 update live and compare against that engine's stock defaults. RPM controls display
 in-game RPM (twice the stored value). Torque remains in arbitrary simulation units;
 the plot uses the existing curve formula, not a calibrated dynamometer model.
-Chassis and other graphical panels can use this model in future updates.
+Sliders provide useful tuning ranges alongside precise numeric inputs. Fuel
+consumption and durability controls are included where their addresses are known.
+The **Advanced** tab retains the raw category table and all CSV parameters.
+Edits, imports, resets, and reverts synchronize across both tabs. Chassis and other
+graphical panels can use this model in future updates.
 
 Run checks with `python -m unittest discover` and `python -m compileall -q .`.
